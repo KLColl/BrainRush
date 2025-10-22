@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user.username }}'s Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .profile-header {
+            margin-bottom: 30px;
+        }
+
+        .stats {
+            margin-top: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .game-selector {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-header">
+        <h1>{{ user.username }}'s Profile</h1>
+        <p>Total Games Played: {{ total_games }}</p>
+        <p>Total Points: {{ total_points }}</p>
+    </div>
+
+    <div class="game-selector">
+        <form method="get">
+            <label for="game">Select Game:</label>
+            <select name="game" id="game" onchange="this.form.submit()">
+                <option value="">--Choose Game--</option>
+                {% for game in games_list %}
+                <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if selected_game %}
+    <div class="stats">
+        <h2>Statistics for "{{ selected_game }}"</h2>
+        {% if stats_by_game %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Level & Rounds</th>
+                    <th>Games Played</th>
+                    <th>Total Score</th>
+                    <th>Average Time (s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for stat in stats_by_game %}
+                <tr>
+                    <td>{{ stat.level }} | {{ stat.rounds }} rounds</td>
+                    <td>{{ stat.rounds_played }}</td>
+                    <td>{{ stat.total_score }}</td>
+                    <td>{{ "%.1f"|format(stat.avg_time) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No results found for this game.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>

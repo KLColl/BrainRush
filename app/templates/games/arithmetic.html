@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}BrainRush — Arithmetic{% endblock %}
+
+{% block content %}
+<div class="game-container">
+  <h2>🧮 Arithmetic Challenge</h2>
+
+  <!-- Setup -->
+  <div id="setup-area">
+    <label for="level-select">Select difficulty level:</label>
+    <select id="level-select">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+    <br><br>
+
+    <label for="count-select">Number of examples:</label>
+    <select id="count-select">
+      <option value="5" selected>5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+    </select>
+    <br><br>
+
+    <button id="start-btn" class="btn start">▶️ Start game</button>
+  </div>
+
+  <!-- Game Area -->
+  <div id="game-area" style="display: none;">
+    <div class="info-bar">
+      <span><strong>Level:</strong> <span id="level-text"></span></span>
+      <span><strong>Time:</strong> <span id="time">0</span> сек</span>
+      <span><strong>Points:</strong> <span id="points">0</span></span>
+      <span><strong>Example:</strong> <span id="current-count">0</span>/<span id="total-count">0</span></span>
+    </div>
+
+    <div class="problem-box">
+      <p id="problem"></p>
+    </div>
+
+    <div class="answer-box">
+      <input id="answer-input" type="text" placeholder="Enter the answer">
+      <button id="submit-btn" class="btn">Send answer</button>
+    </div>
+
+    <p id="feedback"></p>
+
+    <button id="finish-btn" class="btn danger">⛔ Finish</button>
+  </div>
+
+  <!-- Result -->
+  <div id="result-area" style="display: none;">
+    <h3>✅ Game over!</h3>
+    <p>Points received: <strong><span id="final-score"></span></strong></p>
+    <p>Time: <strong><span id="final-time"></span></strong> sec</p>
+    <button id="restart-btn" class="btn">🔁 Play again</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/arithmetic.js') }}"></script>
+{% endblock %}

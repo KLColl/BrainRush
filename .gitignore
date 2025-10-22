@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cython compiled files
+*.pyd
+*.pyo
+*.pdb
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+.ENV/
+
+instance/
+*.db
+*.sqlite3
+
+# Logs and temp files
+*.log
+*.pot
+*.mo
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Migrations / Alembic
+migrations/versions/*
+!migrations/env.py
+!migrations/README
+!migrations/script.py.mako
+
+# Environment files
+.env
+.env.*
+*.env
+
+# IDE / Editor files
+.vs
+.vscode/
+.idea/
+*.iml
+
+# Byte-compiled / cache
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.installed.cfg
+
+# Pytest / Coverage
+.coverage
+htmlcov/
+.tox/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
