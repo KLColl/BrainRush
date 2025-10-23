@@ -3,29 +3,47 @@
 <head>
     <meta charset="utf-8">
     <title>{% block title %}BrainRush{% endblock %}</title>
+
+    {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% endblock %}
+
 </head>
 <body>
-<header>
-    <h1><a href="/" style="text-decoration:none; color:inherit;">🧠 BrainRush</a></h1>
-    <nav>
-        <a href="/">Home</a> |
-        <a href="/game">Game</a>
-    </nav>
-    <hr>
-</header>
+    <header class="main-header">
+        <div class="header-content">
 
-<main>
-    {% block content %}{% endblock %}
-</main>
+            <nav class="main-nav left-nav">
+                <a href="/">Home</a>
+                <a href="/games">Games</a>
+            </nav>
 
-<footer>
-    <hr>
-    <p style="font-size: 0.9em; color: gray;">
-        BrainRush — intellectual mini-games
-    </p>
-</footer>
+            <h1 class="logo">
+                <a href="/" style="text-decoration:none; color:inherit;">
+                    🧠 BrainRush
+                </a>
+            </h1>
 
-{% block scripts %}{% endblock %}
+            <div class="right-nav">
+                <a href="/profile" class="btn profile-btn">
+                    👤 Profile
+                </a>
+            </div>
+
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <hr>
+        <p style="font-size: 0.9em; color: gray;">
+            BrainRush — intellectual mini-games
+        </p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
 </body>
 </html>

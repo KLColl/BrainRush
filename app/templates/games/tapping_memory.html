@@ -1,0 +1,59 @@
+﻿{% extends "base.html" %}
+
+{% block title %}BrainRush — Tapping Memory{% endblock %}
+
+{% block head %}
+    {{ super() }} 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tapping_memory.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="game-container">
+    <h2>🧠 Tapping Memory Challenge</h2>
+
+    <div id="setup-area">
+        <label for="level-select">Select grid size:</label>
+        <select id="level-select">
+            <option value="easy">Easy (3x3 grid)</option>
+            <option value="medium">Medium (4x4 grid)</option>
+            <option value="hard">Hard (5x5 grid)</option>
+        </select>
+        <br><br>
+
+        <p>Watch the sequence of cells light up, then tap them in the exact same order.</p>
+        <p>The sequence length increases with every successful round.</p>
+        <button id="start-btn" class="btn start">▶️ Start Game</button>
+    </div>
+
+    <div id="game-area" style="display: none;">
+        <div class="info-bar">
+            <span>Level: <strong id="level-text">Easy</strong></span>
+            <span>Length: <strong id="current-length">2</strong></span>
+            <span>Time Left: <strong id="time-left">0</strong>s</span> 
+            <span>Score: <strong id="score">0</strong></span>
+        </div>
+        
+        <p id="instruction-text" class="instruction">Watch carefully...</p>
+
+        <div id="grid-container">
+            </div>
+
+        <p id="feedback"></p>
+        
+        <div id="action-area" style="display:none;">
+            <button class="btn-action" id="submit-btn" disabled>Submit Sequence</button>
+        </div>
+    </div>
+
+    <div id="result-area" style="display: none;">
+        <h3>✅ Game Over!</h3>
+        <p>Max Sequence Length: <strong><span id="final-length"></span></strong></p>
+        <p>Final Score: <strong><span id="final-score"></span></strong></p>
+        <button id="restart-btn" class="btn">🔁 Play Again</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tapping_memory.js') }}"></script>
+{% endblock %}

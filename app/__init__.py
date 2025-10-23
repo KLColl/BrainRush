@@ -25,15 +25,24 @@ def create_app():
 
     from app.routes.main import main_bp
     from app.routes.games import games_bp
-    from app.routes.arithmetic import arithmetic_bp
     from app.routes.auth import auth_bp
     from app.routes.profile import profile_bp
 
+    from app.routes.arithmetic import arithmetic_bp
+    from app.routes.sequence_recall import sequence_recall_bp
+    from app.routes.color_rush import color_rush_bp
+    from app.routes.tapping_memory import tapping_memory_bp
+
+
     app.register_blueprint(main_bp)
     app.register_blueprint(games_bp)
-    app.register_blueprint(arithmetic_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(profile_bp)
+
+    app.register_blueprint(arithmetic_bp)
+    app.register_blueprint(sequence_recall_bp)
+    app.register_blueprint(color_rush_bp)
+    app.register_blueprint(tapping_memory_bp)
 
     with app.app_context():
         db.create_all()

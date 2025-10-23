@@ -1,0 +1,176 @@
+﻿{% extends "base.html" %}
+
+{% block title %}BrainRush — Sequence Recall{% endblock %}
+
+{% block head %}
+    {{ super() }} 
+    <style>
+        /* Базовые стили для игры Sequence Recall */
+        .game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
+        .info-bar {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        #number-display {
+            font-size: 80px;
+            font-weight: bold;
+            height: 100px;
+            line-height: 100px;
+            margin: 30px 0;
+            color: #1a73e8; /* Синий цвет для выделения числа */
+        }
+        #user-sequence {
+            min-height: 40px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 20px 0;
+            font-size: 24px;
+            letter-spacing: 5px;
+            text-align: center; /* Центрирование вводимой последовательности */
+        }
+
+        /* ИСПРАВЛЕНО: Сетка для кнопок (4 столбца) */
+        #input-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 столбца для чисел */
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-number {
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .btn-number:hover {
+            background-color: #f0f0f0;
+        }
+        
+        /* Кнопки действий */
+        .btn-action {
+            padding: 15px; /* Увеличил padding для соответствия числовым кнопкам */
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px; /* Размер шрифта для кнопок действий */
+        }
+        
+        /* Новая стилизация для кнопок, занимающих несколько столбцов */
+        .btn-action-wide {
+            grid-column: span 2; /* Занимает два столбца */
+        }
+        
+        /* NEW: Стилизация для кнопки 0 */
+        .btn-zero {
+            grid-column: span 1;
+        }
+
+        #submit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #clear-btn {
+            background-color: #ff9800;
+            color: white;
+        }
+        #finish-btn {
+             /* Стили для кнопки Finish */
+            background-color: #ccc !important;
+            color: #333 !important;
+        }
+        .feedback-success {
+            color: green;
+            font-weight: bold;
+        }
+        .feedback-fail {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="game-container">
+    <h2>🧠 Sequence Recall Challenge</h2>
+
+    <div id="setup-area">
+        <label for="level-select">Select difficulty level:</label>
+        <select id="level-select">
+            <option value="easy">Easy (Slower display, more time to recall)</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard (Faster display, less time to recall)</option>
+        </select>
+        <br><br>
+
+        <p>Your goal is to memorize and recall an increasing sequence of numbers.</p>
+        <button id="start-btn" class="btn start">▶️ Start Game</button>
+    </div>
+
+    <div id="game-area" style="display: none;">
+        <div class="info-bar">
+            <span>Level: <strong id="level-text">Easy</strong></span>
+            <span>Length: <strong id="current-count">2</strong></span>
+            <span>Time: <strong id="time">0</strong> sec</span>
+            <span>Score: <strong id="points">0</strong></span>
+        </div>
+        
+        <p id="instruction-text" class="instruction">Get ready...</p>
+
+        <div class="problem-box">
+            <p id="number-display">...</p>
+        </div>
+
+        <p id="feedback" style="min-height: 20px;"></p>
+        
+        <div id="input-area">
+            
+            <div id="user-sequence" class="sequence-display" style="grid-column: span 3;"></div>
+            
+            <button class="btn-number" data-value="7">7</button>
+            <button class="btn-number" data-value="8">8</button>
+            <button class="btn-number" data-value="9">9</button>
+            
+            <button class="btn-number" data-value="4">4</button>
+            <button class="btn-number" data-value="5">5</button>
+            <button class="btn-number" data-value="6">6</button>
+            
+            <button class="btn-number" data-value="1">1</button>
+            <button class="btn-number" data-value="2">2</button>
+            <button class="btn-number" data-value="3">3</button>
+            
+            <button class="btn-action" id="clear-btn">Clear</button>
+            <button class="btn-number btn-zero" data-value="0">0</button>
+            <button class="btn-action" id="submit-btn">Submit</button>
+        </div>
+
+        <button id="finish-btn" class="btn" style="margin-top: 20px;">Finish Game</button>
+    </div>
+
+    <div id="result-area" style="display: none;">
+        <h3>✅ Game Over!</h3>
+        <p>Max Sequence Length Reached: <strong><span id="final-score"></span></strong></p>
+        <p>Total Time: <strong><span id="final-time"></span></strong> sec</p>
+        <button id="restart-btn" class="btn">🔁 Play Again</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sequence_recall.js') }}"></script>
+{% endblock %}

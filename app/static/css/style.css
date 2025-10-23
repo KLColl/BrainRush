@@ -1,17 +1,137 @@
 body {
-  font-family: Arial, sans-serif;
-  margin: 40px;
-  background-color: #fafafa;
-  color: #333;
+    margin-top: 70px;
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
 }
 
-h1, h2 {
-  color: #2a6;
+.main-header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
-a {
-  color: #2a6;
+.header-content {
+    max-width: 1000px; 
+    margin: 0 auto; 
+    padding: 0 10px; 
+    
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    height: 40px; 
 }
-a:hover {
-  text-decoration: underline;
+
+.logo {
+    margin: 0;
+    text-align: center;
+}
+
+.logo a {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #007bff;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.left-nav, .right-nav {
+    min-width: 140px; 
+    display: flex;
+    align-items: center;
+}
+
+.left-nav {
+    justify-content: flex-start;
+}
+
+.right-nav {
+    justify-content: flex-end;
+}
+
+.left-nav a {
+    margin-right: 20px; 
+    color: #555;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1em;
+    transition: color 0.2s;
+}
+
+.left-nav a:hover {
+    color: #007bff;
+}
+
+.profile-btn {
+    background-color: #6c757d; 
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-decoration: none; 
+    font-size: 1em;
+    transition: background-color 0.2s;
+}
+
+.profile-btn:hover {
+    background-color: #5a6268;
+}
+
+.game-container {
+    max-width: 600px;
+    margin: 30px auto; 
+    background: white;
+    padding: 20px; 
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.btn {
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.btn.start {
+    background-color: #22c55e; /* Green */
+    color: white;
+}
+.btn.start:hover {
+    background-color: #16a34a;
+}
+
+.btn.danger {
+    background-color: #ef4444; /* Red */
+    color: white;
+}
+.btn.danger:hover {
+    background-color: #dc2626;
+}
+
+.btn.secondary {
+    background-color: #f0f0f0; /* Light gray */
+    color: #333;
+}
+.btn.secondary:hover {
+    background-color: #ddd;
+}
+
+.btn.success {
+    background-color: #007bff; /* Blue */
+    color: white;
+}
+.btn.success:hover {
+    background-color: #0056b3;
 }

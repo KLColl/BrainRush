@@ -7,6 +7,8 @@ games_bp = Blueprint("games", __name__, url_prefix="/games")
 @login_required
 def games_list():
     games = [
-        {"name": "Arithmetic", "url": url_for("arithmetic.arithmetic_game")}        
+        {"name": "Arithmetic", "url": url_for("arithmetic.arithmetic_game")},        
+        {"name": "Sequence Recall", "url": url_for("sequence_recall.sequence_recall_game")},  
+        {"name": "Color Rush", "url": url_for("color_rush.color_rush_game")}  
     ]
     return render_template("games.html", games=games)
