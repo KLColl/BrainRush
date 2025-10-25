@@ -9,6 +9,7 @@ def games_list():
     games = [
         {"name": "Arithmetic", "url": url_for("arithmetic.arithmetic_game")},        
         {"name": "Sequence Recall", "url": url_for("sequence_recall.sequence_recall_game")},  
-        {"name": "Color Rush", "url": url_for("color_rush.color_rush_game")}  
+        {"name": "Color Rush", "url": url_for("color_rush.color_rush_game")},
+        {"name": "Tapping Memory", "url": url_for("tapping_memory.tapping_memory_game")}
     ]
     return render_template("games.html", games=games)

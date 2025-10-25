@@ -7,7 +7,7 @@ tapping_memory_bp = Blueprint("tapping_memory", __name__, url_prefix="/game/tapp
 
 @tapping_memory_bp.route("/")
 @login_required
-def arithmetic_game():
+def tapping_memory_game():
     return render_template("games/tapping_memory.html")
 
 @tapping_memory_bp.route("/save_result", methods=["POST"])
