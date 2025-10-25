@@ -3,8 +3,26 @@
 {% block title %}BrainRush — Home{% endblock %}
 
 {% block content %}
-<h2>Welcome to BrainRush!</h2>
-<p>Test your thinking speed and accuracy – solve arithmetic problems as quickly as possible!</p>
-<p>There are three difficulty levels: <strong>Easy</strong>, <strong>Medium</strong> and <strong>Hard</strong>.</p>
-<a href="/games">🚀 Start Game</a>
+<section class="home-section">
+    <div class="hero">
+        <h2>Welcome to <span class="accent">BrainRush</span>!</h2>
+        <p class="subtitle">Train your memory, logic, and focus through fun mini-games.</p>
+        <a href="/games" class="btn primary">🚀 Start Playing</a>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <h3>🧠 Logic Games</h3>
+            <p>Sharpen your mind and boost problem-solving skills.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🎯 Attention</h3>
+            <p>Test your focus with fast and precise challenges.</p>
+        </div>
+        <div class="feature-card">
+            <h3>💾 Memory</h3>
+            <p>Improve your memory with pattern-based mini-games.</p>
+        </div>
+    </div>
+</section>
 {% endblock %}

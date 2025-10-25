@@ -1,52 +1,36 @@
 ﻿{% extends "base.html" %}
-
-{% block title %}BrainRush — Color Rush{% endblock %}
-
-{% block head %}
-{{ super() }}
-    {% endblock %}
+{% block title %}BrainRush: Color Rush{% endblock %}
 
 {% block content %}
 <div class="game-container">
-    <h2>🎨 Color Rush Challenge (Stroop Effect)</h2>
+    <h2>🎨 Color Rush</h2>
 
     <div id="setup-area">
-        <label for="level-select">Select difficulty level:</label>
+        <label>Level:</label>
         <select id="level-select">
-            <option value="easy">Easy (4 colors, 5s limit)</option>
-            <option value="medium">Medium (6 colors, 4s limit)</option>
-            <option value="hard">Hard (8 colors, 2.5s limit)</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
         </select>
         <br><br>
-
-        <p>Click the button that matches the **COLOR OF THE FONT**, ignoring the word itself.</p>
-        <button id="start-btn" class="btn start">▶️ Start Game</button>
+        <button id="start-btn" class="btn start">Start Game</button>
     </div>
 
-    <div id="game-area" style="display: none;">
-        <div class="info-bar">
-            <span><strong>Round:</strong> <span id="current-round">0/10</span></span>
-            <span><strong>Time:</strong> <span id="time">0</span> sec</span>
-            <span><strong>Score:</strong> <span id="score">0</span></span>
-        </div>
-
-        <p id="instruction-text" class="instruction">Focus on the color...</p>
-
-        <div class="problem-box">
-            <p id="color-word" style="font-size: 36px; font-weight: bold; height: 40px; margin: 20px 0;"></p>
-        </div>
-
-        <div id="answer-buttons" style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
-        </div>
-
-        <p id="feedback" style="margin-top: 20px; font-weight: bold; min-height: 20px;"></p>
+    <div id="game-area" style="display:none;">
+        <p>Level: <span id="level-text"></span></p>
+        <p>Round: <span id="current-round"></span></p>
+        <p>Time: <span id="time">0</span> sec</p>
+        <h3 id="color-word">COLOR</h3>
+        <div id="answer-buttons" class="color-buttons"></div>
+        <p id="feedback"></p>
+        <p>Score: <span id="score">0</span></p>
     </div>
 
-    <div id="result-area" style="display: none;">
-        <h3>✅ Game Over!</h3>
-        <p>Final Score: <strong><span id="final-score"></span></strong></p>
-        <p>Total Time: <strong><span id="final-time"></span></strong> sec</p>
-        <button id="restart-btn" class="btn">🔁 Play Again</button>
+    <div id="result-area" style="display:none;">
+        <h3>🎯 Final Results</h3>
+        <p>Score: <span id="final-score"></span></p>
+        <p>Total time: <span id="final-time"></span> sec</p>
+        <button id="restart-btn" class="btn secondary">Restart</button>
     </div>
 </div>
 {% endblock %}

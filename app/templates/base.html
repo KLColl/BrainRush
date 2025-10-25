@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}BrainRush{% endblock %}</title>
 
     {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% endblock %}
-
 </head>
+
 <body>
     <header class="main-header">
         <div class="header-content">
-
             <nav class="main-nav left-nav">
                 <a href="/">Home</a>
                 <a href="/games">Games</a>
@@ -20,29 +20,21 @@
             </nav>
 
             <h1 class="logo">
-                <a href="/" style="text-decoration:none; color:inherit;">
-                    🧠 BrainRush
-                </a>
+                <a href="/" class="logo-link">🧠 BrainRush</a>
             </h1>
 
             <div class="right-nav">
-                <a href="/profile" class="btn profile-btn">
-                    👤 Profile
-                </a>
+                <a href="/profile" class="profile-btn">👤 Profile</a>
             </div>
-
         </div>
     </header>
 
-    <main>
+    <main class="main-container">
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <hr>
-        <p style="font-size: 0.9em; color: gray;">
-            BrainRush — intellectual mini-games
-        </p>
+    <footer class="main-footer">
+        <p>BrainRush — intellectual mini-games</p>
     </footer>
 
     {% block scripts %}{% endblock %}

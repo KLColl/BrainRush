@@ -1,0 +1,125 @@
+.profile-section {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin: 30px auto;
+    max-width: 800px;
+}
+
+.profile-header h1 {
+    font-size: 1.8em;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.profile-summary {
+    background-color: #f3f4f6;
+    padding: 12px 20px;
+    border-radius: 10px;
+    display: inline-block;
+    text-align: left;
+}
+
+.profile-summary p {
+    margin: 5px 0;
+    color: #374151;
+}
+
+.game-selector {
+    margin-top: 25px;
+}
+
+.game-selector label {
+    font-weight: 600;
+    color: #111827;
+    margin-right: 10px;
+}
+
+.game-selector select {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.game-selector select:hover {
+    border-color: #2563eb;
+}
+
+.stats {
+    margin-top: 30px;
+}
+
+.stats h2 {
+    color: #2563eb;
+    margin-bottom: 15px;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.stats-table th,
+.stats-table td {
+    border: 1px solid #e5e7eb;
+    padding: 10px;
+    text-align: center;
+}
+
+.stats-table th {
+    background-color: #f3f4f6;
+    color: #374151;
+    font-weight: 600;
+}
+
+.stats-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.no-data {
+    color: #6b7280;
+    font-style: italic;
+}
+
+.logout-container {
+    margin-top: 40px;
+    text-align: right;
+}
+
+.logout-btn {
+    background-color: #dc2626;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.logout-btn:hover {
+    background-color: #b91c1c;
+}
+
+@media (max-width: 600px) {
+    .profile-section {
+        padding: 20px;
+    }
+
+    .stats-table th,
+    .stats-table td {
+        font-size: 0.9em;
+        padding: 6px;
+    }
+
+    .logout-container {
+        text-align: center;
+    }
+}

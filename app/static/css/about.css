@@ -1,0 +1,44 @@
+.page-section {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #4834d4;
+}
+
+.about-text {
+    font-size: 1.1rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #4834d4;
+    font-weight: 700;
+}
+
+.team-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 2rem;
+}
+
+.team-list li {
+    background-color: #f5f6fa;
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.6rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}

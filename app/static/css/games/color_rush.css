@@ -1,0 +1,27 @@
+#color-word {
+    font-size: 2.2em;
+    font-weight: bold;
+    margin: 20px 0;
+}
+.color-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+.color-choice {
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s, background-color 0.2s;
+}
+.color-choice:hover {
+    transform: scale(1.05);
+    background-color: #f3f4f6;
+}
+#feedback {
+    font-weight: bold;
+    margin-top: 10px;
+}

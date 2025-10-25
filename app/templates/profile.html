@@ -1,88 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ user.username }}'s Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            margin: 0;
-            padding: 20px;
-        }
+{% extends "base.html" %}
 
-        h1, h2 {
-            color: #333;
-        }
+{% block title %}{{ user.username }} — Profile{% endblock %}
 
-        .profile-header {
-            margin-bottom: 30px;
-        }
-        
-        .logout-container {
-            margin-top: 40px;
-            text-align: left;
-        }
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
 
-        .logout-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #f44336;
-            color: white;
-            text-decoration: none;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-
-        .logout-btn:hover {
-            background-color: #d32f2f;
-        }
-
-        .stats {
-            margin-top: 20px;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 40px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .game-selector {
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    
+{% block content %}
+<section class="profile-section">
     <div class="profile-header">
-        <h1>{{ user.username }}'s Profile</h1>
-        <p>Total Games Played: {{ total_games }}</p>
-        <p>Total Points: {{ total_points }}</p>
+        <h1>👤 {{ user.username }}'s Profile</h1>
+        <div class="profile-summary">
+            <p><strong>Total Games Played:</strong> {{ total_games }}</p>
+            <p><strong>Total Points:</strong> {{ total_points }}</p>
+        </div>
     </div>
 
     <div class="game-selector">
         <form method="get">
-            <label for="game">Select Game:</label>
+            <label for="game"><strong>Select Game:</strong></label>
             <select name="game" id="game" onchange="this.form.submit()">
-                <option value="">--Choose Game--</option>
+                <option value="">-- Choose Game --</option>
                 {% for game in games_list %}
                 <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
                 {% endfor %}
@@ -92,9 +30,10 @@
 
     {% if selected_game %}
     <div class="stats">
-        <h2>Statistics for "{{ selected_game }}"</h2>
+        <h2>📊 Statistics for "{{ selected_game }}"</h2>
+
         {% if stats_by_game %}
-        <table>
+        <table class="stats-table">
             <thead>
                 <tr>
                     <th>Level & Rounds</th>
@@ -115,14 +54,13 @@
             </tbody>
         </table>
         {% else %}
-        <p>No results found for this game.</p>
+        <p class="no-data">No results found for this game.</p>
         {% endif %}
     </div>
     {% endif %}
 
     <div class="logout-container">
-        <a href="/auth/logout" class="logout-btn">Log Out</a>
+        <a href="/auth/logout" class="logout-btn">🚪 Log Out</a>
     </div>
-
-</body>
-</html>
+</section>
+{% endblock %}

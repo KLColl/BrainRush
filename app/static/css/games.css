@@ -1,0 +1,42 @@
+.page-section {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.page-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #4834d4;
+}
+
+.games-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.game-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 200px;
+    text-decoration: none;
+    color: #2f3640;
+    font-weight: 600;
+    transition: all 0.25s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    background: linear-gradient(145deg, #6c63ff, #7d5fff);
+    color: white;
+}

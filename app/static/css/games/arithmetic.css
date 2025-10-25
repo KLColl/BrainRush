@@ -1,0 +1,14 @@
+#problem {
+    font-size: 2em;
+    margin: 15px 0;
+}
+#answer-input {
+    padding: 8px;
+    width: 120px;
+    font-size: 1.2em;
+    text-align: center;
+}
+#feedback {
+    font-weight: bold;
+    margin-top: 10px;
+}

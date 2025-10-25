@@ -1,59 +1,48 @@
 ﻿{% extends "base.html" %}
-
-{% block title %}BrainRush — Tapping Memory{% endblock %}
-
-{% block head %}
-    {{ super() }} 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tapping_memory.css') }}">
-{% endblock %}
+{% block title %}BrainRush: Tapping Memory{% endblock %}
 
 {% block content %}
 <div class="game-container">
-    <h2>🧠 Tapping Memory Challenge</h2>
+    <h2>🟩 Tapping Memory</h2>
 
     <div id="setup-area">
-        <label for="level-select">Select grid size:</label>
+        <label>Level:</label>
         <select id="level-select">
-            <option value="easy">Easy (3x3 grid)</option>
-            <option value="medium">Medium (4x4 grid)</option>
-            <option value="hard">Hard (5x5 grid)</option>
+            <option value="easy">Easy (3×3)</option>
+            <option value="medium">Medium (4×4)</option>
+            <option value="hard">Hard (5×5)</option>
         </select>
         <br><br>
-
-        <p>Watch the sequence of cells light up, then tap them in the exact same order.</p>
-        <p>The sequence length increases with every successful round.</p>
-        <button id="start-btn" class="btn start">▶️ Start Game</button>
+        <button id="start-btn" class="btn start">Start Game</button>
     </div>
 
-    <div id="game-area" style="display: none;">
-        <div class="info-bar">
-            <span>Level: <strong id="level-text">Easy</strong></span>
-            <span>Length: <strong id="current-length">2</strong></span>
-            <span>Time Left: <strong id="time-left">0</strong>s</span> 
-            <span>Score: <strong id="score">0</strong></span>
+    <div id="game-area" style="display:none;">
+        <div class="status-bar">
+            <p>Level: <span id="level-text"></span></p>
+            <p>Sequence length: <span id="current-length"></span></p>
+            <p>Time left: <span id="time-left">0</span> s</p>
+            <p>Score: <span id="score">0</span></p>
         </div>
-        
-        <p id="instruction-text" class="instruction">Watch carefully...</p>
 
-        <div id="grid-container">
-            </div>
+        <p id="instruction-text" class="instruction-text">Press start to begin</p>
+        <div id="grid-container" class="grid-container"></div>
+        <p id="feedback" class="feedback"></p>
 
-        <p id="feedback"></p>
-        
         <div id="action-area" style="display:none;">
-            <button class="btn-action" id="submit-btn" disabled>Submit Sequence</button>
+            <button id="submit-btn" class="btn success">Submit</button>
         </div>
     </div>
 
-    <div id="result-area" style="display: none;">
-        <h3>✅ Game Over!</h3>
-        <p>Max Sequence Length: <strong><span id="final-length"></span></strong></p>
-        <p>Final Score: <strong><span id="final-score"></span></strong></p>
-        <button id="restart-btn" class="btn">🔁 Play Again</button>
+    <div id="result-area" style="display:none;">
+        <h3>🎯 Game Over!</h3>
+        <p>Final score: <span id="final-score">0</span></p>
+        <p>Longest sequence reached: <span id="final-length">0</span></p>
+        <button id="restart-btn" class="btn secondary">Play Again</button>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tapping_memory.css') }}">
 <script src="{{ url_for('static', filename='js/tapping_memory.js') }}"></script>
 {% endblock %}
