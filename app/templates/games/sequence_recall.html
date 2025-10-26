@@ -1,51 +1,81 @@
-﻿{% extends "base.html" %}
-{% block title %}BrainRush: Sequence Recall{% endblock %}
+{% extends "base.html" %}
+{% block title %}Sequence Recall — BrainRush{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/games/sequence_recall.css') }}">
+{% endblock %}
 
 {% block content %}
-<div class="game-container">
-    <h2>🔢 Sequence Recall</h2>
+<section class="game-section game-container card">
+    <h1>🔢 Sequence Recall</h1>
 
-    <div id="setup-area">
-        <label>Level:</label>
-        <select id="level-select">
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-        </select>
-        <br><br>
-        <button id="start-btn" class="btn start">Start Game</button>
-    </div>
+    <div id="setup-area" class="setup-area">
+        <div class="controls-vertical">
+            <label class="center-label">
+                <div class="level-caption">Level</div>
+                <select id="level-select" class="level-select">
+                    <option value="easy">easy</option>
+                    <option value="medium">medium</option>
+                    <option value="hard">hard</option>
+                </select>
+            </label>
 
-    <div id="game-area" style="display:none;">
-        <p>Level: <span id="level-text"></span></p>
-        <p>Time: <span id="time">0</span> sec</p>
-        <p>Sequence length: <span id="current-count">0</span></p>
-        <h3 id="instruction-text">Watch the numbers...</h3>
-        <div id="number-display" class="number-display">--</div>
-        <div id="input-area" class="input-area" style="display:none;">
-            <div id="user-sequence"></div>
-            <div class="number-buttons">
-                {% for i in range(10) %}
-                <button class="btn btn-number" data-value="{{ i }}">{{ i }}</button>
-                {% endfor %}
-            </div>
-            <div>
-                <button id="clear-btn" class="btn secondary">Clear</button>
-                <button id="submit-btn" class="btn success">Submit</button>
+            <div class="start-wrap">
+                <button id="start-btn" class="btn primary large">Start</button>
             </div>
         </div>
-        <p id="feedback"></p>
-        <p>Score: <span id="points">0</span></p>
-        <button id="finish-btn" class="btn danger">Finish</button>
+        <p class="muted">Memorize the sequence of digits and type them back.</p>
     </div>
 
-    <div id="result-area" style="display:none;">
-        <h3>🎯 Final Results</h3>
-        <p>Score: <span id="final-score"></span></p>
-        <p>Time: <span id="final-time"></span> sec</p>
-        <button id="restart-btn" class="btn secondary">Restart</button>
+    <div id="game-area" class="game-area" style="display:none">
+        <div class="status-row">
+            <div>Level: <strong id="level-text">-</strong></div>
+            <div>Points: <strong id="points">0</strong></div>
+            <div>Length: <strong id="current-count">0</strong></div>
+            <div>Time: <strong id="time">0</strong>s</div>
+        </div>
+
+        <div class="sequence-box card">
+            <div id="instruction-text" class="instruction-text">Instruction</div>
+            <div id="number-display" class="number-display">—</div>
+
+            <div id="input-area" class="input-area" style="display:none">
+                <div id="user-sequence" class="user-sequence"></div>
+
+                <div class="num-pad" role="application" aria-label="numeric keypad">
+                    {# first three rows 1..9 #}
+                    {% for n in range(1,10) %}
+                    <button class="btn btn-number" data-value="{{ n }}">{{ n }}</button>
+                    {% endfor %}
+                    {# backspace, zero, placeholder for symmetry - backspace left, 0 center, clear right (clear is separate too) #}
+                    <button id="backspace-btn" class="btn btn-number special">⌫</button>
+                    <button class="btn btn-number" data-value="0">0</button>
+                    <button id="pad-clear-btn" class="btn btn-number special">Clear</button>
+                </div>
+
+                <div class="controls-row">
+                    <button id="clear-btn" class="btn secondary">Clear all</button>
+                    <button id="submit-btn" class="btn primary">Submit</button>
+                </div>
+            </div>
+
+            <div id="feedback" class="feedback"></div>
+            <div class="game-actions">
+                <button id="finish-btn" class="btn secondary">Finish</button>
+                <button id="restart-btn" class="btn secondary">Restart</button>
+            </div>
+        </div>
     </div>
-</div>
+
+    <div id="result-area" class="result-area" style="display:none">
+        <h3>Result</h3>
+        <p>Score: <strong id="final-score">0</strong></p>
+        <p>Rounds: <strong id="final-rounds">0</strong></p>
+        <p>Time: <strong id="final-time">0</strong>s</p>
+        <div class="result-actions">
+            <a href="/games" class="btn secondary">Back to games</a>
+        </div>
+    </div>
+</section>
 {% endblock %}
 
 {% block scripts %}

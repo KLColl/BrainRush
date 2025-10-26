@@ -1,18 +1,13 @@
 {% extends "base.html" %}
-
 {% block title %}Games — BrainRush{% endblock %}
-
 {% block content %}
 <section class="games-section">
-    <h1>Select a Game</h1>
-    <p class="subtitle">Choose one of our fun brain-training games:</p>
-
-    <div class="games-list">
-        {% for game in games %}
-        <a href="{{ game.url }}" class="game-card">
-            <h2>{{ game.name }}</h2>
-        </a>
-        {% endfor %}
-    </div>
+  <h1>🎮 Select a Game</h1>
+  <p class="subtitle">Choose one of our cognitive challenges:</p>
+  <div class="games-list">
+    {% for game in games %}
+    <a class="game-card card" href="{{ game.url }}"><h2>{{ game.name }}</h2></a>
+    {% endfor %}
+  </div>
 </section>
 {% endblock %}

@@ -1,66 +1,42 @@
 {% extends "base.html" %}
-
 {% block title %}{{ user.username }} — Profile{% endblock %}
-
-{% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
-{% endblock %}
-
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">{% endblock %}
 {% block content %}
-<section class="profile-section">
-    <div class="profile-header">
-        <h1>👤 {{ user.username }}'s Profile</h1>
-        <div class="profile-summary">
-            <p><strong>Total Games Played:</strong> {{ total_games }}</p>
-            <p><strong>Total Points:</strong> {{ total_points }}</p>
-        </div>
+<section class="profile-section card">
+  <div class="profile-header">
+    <h1>👤 {{ user.username }}</h1>
+    <div class="profile-summary">
+      <p><strong>Games Played:</strong> {{ total_games }}</p>
+      <p><strong>Total Points:</strong> {{ total_points }}</p>
     </div>
+  </div>
 
-    <div class="game-selector">
-        <form method="get">
-            <label for="game"><strong>Select Game:</strong></label>
-            <select name="game" id="game" onchange="this.form.submit()">
-                <option value="">-- Choose Game --</option>
-                {% for game in games_list %}
-                <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
-                {% endfor %}
-            </select>
-        </form>
-    </div>
+  <div class="game-selector">
+    <form method="get">
+      <label for="game">Select Game:</label>
+      <select name="game" id="game" onchange="this.form.submit()">
+        <option value="">-- Choose Game --</option>
+        {% for game in games_list %}<option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>{% endfor %}
+      </select>
+    </form>
+  </div>
 
-    {% if selected_game %}
-    <div class="stats">
-        <h2>📊 Statistics for "{{ selected_game }}"</h2>
+  {% if selected_game %}
+  <div class="stats card">
+    <h2>📊 {{ selected_game }} Statistics</h2>
+    {% if stats_by_game %}
+    <table class="stats-table">
+      <thead><tr><th>Level | Rounds</th><th>Games</th><th>Score</th><th>Avg Time (s)</th></tr></thead>
+      <tbody>
+        {% for stat in stats_by_game %}
+        <tr><td>{{ stat.level }} | {{ stat.rounds }}</td><td>{{ stat.rounds_played }}</td><td>{{ stat.total_score }}</td><td>{{ "%.1f"|format(stat.avg_time) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}<p class="no-data">No results for this game yet.</p>{% endif %}
+  </div>
+  {% endif %}
 
-        {% if stats_by_game %}
-        <table class="stats-table">
-            <thead>
-                <tr>
-                    <th>Level & Rounds</th>
-                    <th>Games Played</th>
-                    <th>Total Score</th>
-                    <th>Average Time (s)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for stat in stats_by_game %}
-                <tr>
-                    <td>{{ stat.level }} | {{ stat.rounds }} rounds</td>
-                    <td>{{ stat.rounds_played }}</td>
-                    <td>{{ stat.total_score }}</td>
-                    <td>{{ "%.1f"|format(stat.avg_time) }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p class="no-data">No results found for this game.</p>
-        {% endif %}
-    </div>
-    {% endif %}
-
-    <div class="logout-container">
-        <a href="/auth/logout" class="logout-btn">🚪 Log Out</a>
-    </div>
+  <div class="logout-container"><a href="/auth/logout" class="btn danger">Log Out</a></div>
 </section>
 {% endblock %}

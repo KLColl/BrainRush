@@ -1,18 +1,15 @@
-<h2>Login</h2>
-<form method="POST">
+{% extends "base.html" %}
+{% block title %}Login — BrainRush{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">{% endblock %}
+{% block content %}
+<section class="auth-section card">
+  <h2>Login</h2>
+  <form method="POST">
     <input type="text" name="username" placeholder="Username" required>
     <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Log In</button>
-</form>
-
-<a href="{{ url_for('auth.register') }}">Create an account</a>
-
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-<ul>
-    {% for msg in messages %}
-    <li>{{ msg }}</li>
-    {% endfor %}
-</ul>
-  {% endif %}
-{% endwith %}
+    <button class="btn primary" type="submit">Log In</button>
+  </form>
+  <a class="link" href="{{ url_for('auth.register') }}">Create an account</a>
+  {% with messages = get_flashed_messages() %}{% if messages %}<ul class="messages">{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>{% endif %}{% endwith %}
+</section>
+{% endblock %}

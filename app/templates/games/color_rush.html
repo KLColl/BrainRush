@@ -1,38 +1,59 @@
-﻿{% extends "base.html" %}
-{% block title %}BrainRush: Color Rush{% endblock %}
+{% extends "base.html" %}
+{% block title %}Color Rush — BrainRush{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/games/color_rush.css') }}">
+{% endblock %}
 
 {% block content %}
-<div class="game-container">
-    <h2>🎨 Color Rush</h2>
+<section class="game-section game-container card">
+    <h1>🎨 Color Rush</h1>
 
-    <div id="setup-area">
-        <label>Level:</label>
-        <select id="level-select">
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-        </select>
-        <br><br>
-        <button id="start-btn" class="btn start">Start Game</button>
+    <div id="setup-area" class="setup-area">
+        <div class="controls-vertical">
+            <label class="center-label">
+                <div class="level-caption">Level</div>
+                <select id="level-select" class="level-select">
+                    <option value="easy">easy</option>
+                    <option value="medium">medium</option>
+                    <option value="hard">hard</option>
+                </select>
+            </label>
+
+            <div class="start-wrap">
+                <button id="start-btn" class="btn primary large">Start</button>
+            </div>
+        </div>
+        <p class="muted">Click the <strong>font color</strong> (not the word). Fast reactions win more points.</p>
     </div>
 
-    <div id="game-area" style="display:none;">
-        <p>Level: <span id="level-text"></span></p>
-        <p>Round: <span id="current-round"></span></p>
-        <p>Time: <span id="time">0</span> sec</p>
-        <h3 id="color-word">COLOR</h3>
-        <div id="answer-buttons" class="color-buttons"></div>
-        <p id="feedback"></p>
-        <p>Score: <span id="score">0</span></p>
+    <div id="game-area" class="game-area" style="display:none">
+        <div class="status-row">
+            <div>Score: <strong id="score">0</strong></div>
+            <div>Time: <strong id="time">0</strong>s</div>
+            <div>Round: <strong id="current-round">0/0</strong></div>
+        </div>
+
+        <div class="color-box card">
+            <div id="color-word" class="color-word">COLOR</div>
+            <div id="feedback" class="feedback muted"></div>
+            <div id="answer-buttons" class="answer-buttons"></div>
+        </div>
+
+        <div class="game-actions">
+            <button id="restart-btn" class="btn secondary">Restart</button>
+            <button id="finish-btn" class="btn secondary">Finish</button>
+        </div>
     </div>
 
-    <div id="result-area" style="display:none;">
-        <h3>🎯 Final Results</h3>
-        <p>Score: <span id="final-score"></span></p>
-        <p>Total time: <span id="final-time"></span> sec</p>
-        <button id="restart-btn" class="btn secondary">Restart</button>
+    <div id="result-area" class="result-area" style="display:none">
+        <h3>Result</h3>
+        <p>Score: <strong id="final-score">0</strong></p>
+        <p>Time: <strong id="final-time">0</strong>s</p>
+        <div class="result-actions">
+            <a href="/games" class="btn secondary">Back</a>
+        </div>
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block scripts %}

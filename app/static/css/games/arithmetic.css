@@ -1,14 +1,76 @@
-#problem {
-    font-size: 2em;
-    margin: 15px 0;
+/* arithmetic.css */
+.game-section {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 18px;
 }
-#answer-input {
-    padding: 8px;
-    width: 120px;
-    font-size: 1.2em;
+
+.setup-area .controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.setup-area label {
+    color: var(--muted);
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+}
+
+.problem-box {
+    margin-top: 16px;
+    padding: 18px;
     text-align: center;
 }
-#feedback {
-    font-weight: bold;
-    margin-top: 10px;
+
+.problem-text {
+    font-size: 2.1rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--accent1);
+}
+
+.answer-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+    .answer-row input {
+        max-width: 220px;
+    }
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+.progress {
+    margin-top: 8px;
+    color: var(--muted);
+}
+
+.feedback {
+    min-height: 22px;
+    margin-top: 8px;
+    font-weight: 700;
+}
+
+.game-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.result-area {
+    text-align: center;
+    padding: 12px;
 }

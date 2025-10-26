@@ -1,28 +1,17 @@
 {% extends "base.html" %}
-
 {% block title %}BrainRush — Home{% endblock %}
-
 {% block content %}
 <section class="home-section">
-    <div class="hero">
-        <h2>Welcome to <span class="accent">BrainRush</span>!</h2>
-        <p class="subtitle">Train your memory, logic, and focus through fun mini-games.</p>
-        <a href="/games" class="btn primary">🚀 Start Playing</a>
-    </div>
+  <div class="hero card">
+    <h2>Welcome to <span class="accent">BrainRush</span>!</h2>
+    <p class="subtitle">Train your memory, logic, and attention through fun mini-games.</p>
+    <a href="/games" class="btn primary">🚀 Start Playing</a>
+  </div>
 
-    <div class="features">
-        <div class="feature-card">
-            <h3>🧠 Logic Games</h3>
-            <p>Sharpen your mind and boost problem-solving skills.</p>
-        </div>
-        <div class="feature-card">
-            <h3>🎯 Attention</h3>
-            <p>Test your focus with fast and precise challenges.</p>
-        </div>
-        <div class="feature-card">
-            <h3>💾 Memory</h3>
-            <p>Improve your memory with pattern-based mini-games.</p>
-        </div>
-    </div>
+  <div class="features">
+    <div class="feature-card card"><h3>🧠 Logic</h3><p>Boost reasoning skills.</p></div>
+    <div class="feature-card card"><h3>🎯 Focus</h3><p>Sharpen attention.</p></div>
+    <div class="feature-card card"><h3>💾 Memory</h3><p>Improve recall.</p></div>
+  </div>
 </section>
 {% endblock %}

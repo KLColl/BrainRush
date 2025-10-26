@@ -1,27 +1,116 @@
-#color-word {
-    font-size: 2.2em;
-    font-weight: bold;
-    margin: 20px 0;
+/* color_rush.css */
+.game-section {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 18px;
 }
-.color-buttons {
+
+.color-box {
+    padding: 18px;
+    text-align: center;
+}
+
+.color-word {
+    font-size: 2.3rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+}
+
+.answer-buttons {
     display: flex;
     flex-wrap: wrap;
+    gap: 8px;
     justify-content: center;
-    gap: 10px;
+    margin-top: 12px;
 }
-.color-choice {
-    padding: 10px 20px;
-    font-size: 1.1em;
-    border: 2px solid #ccc;
-    border-radius: 8px;
+
+.btn.color-choice {
+    min-width: 100px;
+    padding: 10px 12px;
+    font-weight: 800;
+    border-radius: 10px;
+}
+
+.controls-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.center-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 220px;
+}
+
+.level-caption {
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+}
+
+.level-select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: #0d0f14;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.start-wrap {
+    margin-top: 8px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn.large {
+    padding: 12px 20px;
+    font-size: 1.05rem;
+    border-radius: 12px;
+}
+
+.status-row {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+.feedback {
+    margin-top: 8px;
+    font-weight: 700;
+    min-height: 20px;
+}
+
+.answer-buttons .btn {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.03);
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+    font-weight: 800;
     cursor: pointer;
-    transition: transform 0.15s, background-color 0.2s;
 }
-.color-choice:hover {
-    transform: scale(1.05);
-    background-color: #f3f4f6;
-}
-#feedback {
-    font-weight: bold;
-    margin-top: 10px;
+
+    .answer-buttons .btn:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 30px rgba(2,6,23,0.12);
+    }
+
+@media (max-width:480px) {
+    .level-select {
+        width: 180px;
+    }
+
+    .answer-buttons .btn {
+        min-width: 72px;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
 }

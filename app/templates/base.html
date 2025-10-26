@@ -1,42 +1,31 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}BrainRush{% endblock %}</title>
-
-    {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    {% endblock %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}BrainRush{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
 </head>
-
 <body>
-    <header class="main-header">
-        <div class="header-content">
-            <nav class="main-nav left-nav">
-                <a href="/">Home</a>
-                <a href="/games">Games</a>
-                <a href="/about">About</a>
-            </nav>
+  <header class="main-header">
+    <div class="header-content">
+      <nav class="main-nav left-nav">
+        <a href="/">Home</a>
+        <a href="/games">Games</a>
+        <a href="/about">About</a>
+      </nav>
+      <h1 class="logo"><a class="logo-link" href="/">🧠 BrainRush</a></h1>
+      <div class="right-nav"><a href="/profile" class="profile-btn">👤 Profile</a></div>
+    </div>
+  </header>
 
-            <h1 class="logo">
-                <a href="/" class="logo-link">🧠 BrainRush</a>
-            </h1>
+  <main class="main-container">
+    {% block content %}{% endblock %}
+  </main>
 
-            <div class="right-nav">
-                <a href="/profile" class="profile-btn">👤 Profile</a>
-            </div>
-        </div>
-    </header>
+  <footer class="main-footer"><p>BrainRush — train your mind daily</p></footer>
 
-    <main class="main-container">
-        {% block content %}{% endblock %}
-    </main>
-
-    <footer class="main-footer">
-        <p>BrainRush — intellectual mini-games</p>
-    </footer>
-
-    {% block scripts %}{% endblock %}
+  {% block scripts %}{% endblock %}
 </body>
 </html>
