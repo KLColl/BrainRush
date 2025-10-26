@@ -221,15 +221,31 @@ app.register_blueprint(main_bp)
 
 ### Головна сторінка
 
-![Головна сторінка](шлях/до/скріншоту)
+![Головна сторінка](screenshots/home.png)
 
 ### Сторінка "Про нас"
 
-![Сторінка Про нас](шлях/до/скріншоту)
+![Сторінка Про нас](screenshots/about.png)
 
-### Додаткові сторінки
+### Вхід
 
-![Додаткова сторінка](шлях/до/скріншоту)
+![Сторінка Вхід](screenshots/login.png)
+
+### Ігри
+
+![Сторінка Ігор](screenshots/games.png)
+
+### Профіль
+
+![Сторінка Профілю](screenshots/profile.png)
+
+### Гра Arithmetic
+
+![Сторінка Гри Arithmetic](screenshots/arithmetic.png)
+
+### Гра Tapping Memory
+
+![Сторінка Гри Tapping Memory](screenshots/tapping_memory.png)
 
 
 ### Висновки
