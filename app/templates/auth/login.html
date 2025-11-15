@@ -10,6 +10,5 @@
     <button class="btn primary" type="submit">Log In</button>
   </form>
   <a class="link" href="{{ url_for('auth.register') }}">Create an account</a>
-  {% with messages = get_flashed_messages() %}{% if messages %}<ul class="messages">{% for msg in messages %}<li>{{ msg }}</li>{% endfor %}</ul>{% endif %}{% endwith %}
 </section>
 {% endblock %}

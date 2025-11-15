@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Feedback</h1>
+
+<form method="post">
+    <label>Name:</label>
+    <input type="text" name="name" value="{{ f.name }}">
+
+    <label>Email:</label>
+    <input type="email" name="email" value="{{ f.email }}">
+
+    <label>Message:</label>
+    <textarea name="message">{{ f.message }}</textarea>
+
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

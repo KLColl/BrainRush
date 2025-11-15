@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import current_user, login_required
-from app.models.game_result import GameResult 
-from app.gamesDB import db 
+from app.db.models import save_game_result
+
 
 color_rush_bp = Blueprint("color_rush", __name__, url_prefix="/game/color_rush")
 
@@ -18,7 +18,7 @@ def save_color_rush_result():
     if not data:
         return jsonify({"status": "error", "message": "No JSON data received"}), 400
 
-    result = GameResult(
+    save_game_result(
         user_id = current_user.id,
         game_name = "color_rush",
         level = data.get("level", "unknown"),
@@ -28,10 +28,7 @@ def save_color_rush_result():
     )
     
     try:
-        db.session.add(result)
-        db.session.commit()
         return jsonify({"status": "success", "message": "Result saved successfully"})
     except Exception as e:
-        db.session.rollback()
         print(f"Error saving result: {e}")
         return jsonify({"status": "error", "message": "Database error"}), 500

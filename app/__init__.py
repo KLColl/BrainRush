@@ -2,8 +2,12 @@ import os
 
 from flask import Flask, redirect, url_for
 from flask_login import LoginManager, login_manager
-from app.gamesDB import db
-from app.models.user import User
+from app.db.models import get_user_by_id
+from app.models.user_obj import UserObject
+from app.db.init_db import init_db
+
+import app.db.models as db_models
+
 
 login_manager = LoginManager()
 
@@ -15,11 +19,7 @@ def create_app():
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret"),
     )
     os.makedirs(app.instance_path, exist_ok=True)
-
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../instance/brainrush.db"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.init_app(app)
-
+    
     login_manager.init_app(app)
     login_manager.login_view = "auth.login" # redirect here if not logged in
 
@@ -28,6 +28,8 @@ def create_app():
     from app.routes.games import games_bp
     from app.routes.auth import auth_bp
     from app.routes.profile import profile_bp
+    from app.routes.admin import admin_bp
+    from app.routes.feedback import feedback_bp
 
     from app.routes.arithmetic import arithmetic_bp
     from app.routes.sequence_recall import sequence_recall_bp
@@ -40,6 +42,10 @@ def create_app():
     app.register_blueprint(games_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(profile_bp)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(feedback_bp)
+
+
 
     app.register_blueprint(arithmetic_bp)
     app.register_blueprint(sequence_recall_bp)
@@ -47,10 +53,11 @@ def create_app():
     app.register_blueprint(tapping_memory_bp)
 
     with app.app_context():
-        db.create_all()
+        init_db()
 
     return app
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    row = db_models.get_user_by_id(int(user_id))
+    return UserObject(row) if row else None

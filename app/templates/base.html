@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   {% block head %}{% endblock %}
 </head>
+
 <body>
   <header class="main-header">
     <div class="header-content">
@@ -16,16 +17,58 @@
         <a href="/about">About</a>
       </nav>
       <h1 class="logo"><a class="logo-link" href="/">🧠 BrainRush</a></h1>
-      <div class="right-nav"><a href="/profile" class="profile-btn">👤 Profile</a></div>
+      <div class="right-nav">
+        <a href="/feedback" class="feedback-btn">💬 Feedback</a>
+        <a href="/profile" class="profile-btn">👤 Profile</a>
+      </div>
     </div>
   </header>
 
   <main class="main-container">
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      <div class="flash-center-wrapper">
+        <div class="flash-center">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+    {% endwith %}
+
     {% block content %}{% endblock %}
   </main>
 
   <footer class="main-footer"><p>BrainRush — train your mind daily</p></footer>
 
-  {% block scripts %}{% endblock %}
+  {% block scripts %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const flashes = document.querySelectorAll('.flash');
+      
+      flashes.forEach(flash => {
+        setTimeout(() => {
+          flash.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          flash.style.opacity = "0";
+          flash.style.transform = "translateY(-10px)";
+          setTimeout(() => flash.remove(), 500);
+        }, 5000);
+      });
+    });
+  </script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.local-time').forEach(el => {
+      const utcString = el.dataset.utc;
+      const date = new Date(utcString); 
+      el.textContent = date.toLocaleString();
+    });
+  });
+  </script>
+  {% endblock %}
+
 </body>
 </html>

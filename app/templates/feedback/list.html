@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Player feedback</h1>
+
+{% if current_user.is_authenticated %}
+<form action="{{ url_for('feedback.feedback_add') }}" method="post" class="feedback-form">
+    <textarea name="message" placeholder="Your feedback..." required></textarea>
+    <button type="submit">Submit</button>
+</form>
+{% else %}
+<p><a href="/auth/login">Log in</a> to leave feedback.</p>
+{% endif %}
+
+<hr>
+
+<h2>All feedback:</h2>
+
+<div class="feedback-list">
+    {% for f in feedbacks %}
+    <div class="feedback-item">
+        <p><strong>{{ f.name }}</strong> — 
+        <span class="local-time" data-utc="{{ f.created_at }}"></span>
+        </p>
+        <p>{{ f.message }}</p>
+
+        {% if current_user.is_authenticated %}
+            {% if current_user.role == "admin" or current_user.id == f.user_id %}
+                <div class="actions">
+                    <a href="{{ url_for('feedback.feedback_edit', fid=f.id) }}">Edit</a>
+
+                    <form action="{{ url_for('feedback.feedback_delete', fid=f.id) }}" method="post" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

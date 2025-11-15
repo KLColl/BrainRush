@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit feedback</h1>
+
+<form method="post">
+    <textarea name="message">{{ f.message }}</textarea>
+    <button type="submit">Save</button>
+</form>
+
+{% endblock %}

@@ -1,11 +1,7 @@
 from turtle import st
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import login_required, current_user
-from sqlalchemy import func
-from app.models.user import User
-from app.models.game_result import GameResult
-
-from app.models.user import db
+from app.db.models import get_user_by_id, get_distinct_games_for_user, get_stats_for_game, get_total_games, get_total_points
 
 profile_bp = Blueprint("profile", __name__, url_prefix="/profile")
 
@@ -17,41 +13,23 @@ def my_profile():
 @profile_bp.route("/<int:user_id>")
 @login_required
 def user_profile(user_id):
-    user = User.query.get(user_id)
-    if not user:
+    user_row = get_user_by_id(user_id)
+    if not user_row:
         abort(404)
 
-    games_list = db.session.query(GameResult.game_name)\
-        .filter_by(user_id=user.id)\
-        .distinct()\
-        .all()
-    games_list = [game.game_name for game in games_list]
-
+    games_list = get_distinct_games_for_user(user_id)
     selected_game = request.args.get("game")
     stats_by_game = []
 
     if selected_game:
-        stats_by_game = db.session.query(
-            GameResult.game_name,
-            GameResult.level,
-            GameResult.rounds,
-            func.count(GameResult.id).label("rounds_played"),
-            func.sum(GameResult.score).label("total_score"),
-            func.avg(GameResult.time_spent).label("avg_time")
-        ).filter(
-            GameResult.user_id==user.id,
-            GameResult.game_name.ilike(selected_game)
-        ).group_by(
-            GameResult.level,
-            GameResult.rounds
-        ).all()
+        stats_by_game = get_stats_for_game(user_id, selected_game)
 
-    total_games = len(current_user.results)
-    total_points = sum(result.score for result in current_user.results)
+    total_games = get_total_games(user_id)
+    total_points = get_total_points(user_id)
     
     return render_template(
         "profile.html",
-        user=user,
+        user=user_row,
         total_games=total_games,
         total_points=total_points,
         games_list=games_list,

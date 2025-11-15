@@ -1,8 +1,8 @@
 import re
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
-from app.models.user import User
-from app.gamesDB import db
+from app.db.models import create_user, get_user_by_username, verify_user_password, get_user_by_id
+from app.models.user_obj import UserObject
 
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -14,19 +14,16 @@ def register():
         password = request.form["password"]
 
         if not re.fullmatch(r"[A-Za-z]{1,16}", username):
-            flash("Username must contain only English letters and be up to 16 characters long.")
+            flash("Username must contain only English letters and be up to 16 characters long.", "warning")
             return redirect(url_for("auth.register"))
 
-        if User.query.filter(db.func.lower(User.username) == username.lower()).first():
+        if get_user_by_username(username):
             flash("This username is already taken.")
             return redirect(url_for("auth.register"))
 
-        new_user = User(username=username)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-
-        flash("Registration successful! Please log in.")
+        user_id = create_user(username, password)
+        flash("Registration successful! Please log in.", "success")
+        return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html")
 
@@ -35,13 +32,14 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        user_row = get_user_by_username(username)
 
-        user = User.query.filter(db.func.lower(User.username) == username.lower()).first()
-        if not user or not user.check_password(password):
-            flash("Invalid username or password.")
+        if not user_row or not verify_user_password(user_row, password):
+            flash("Invalid username or password.", "error")
             return redirect(url_for("auth.login"))
 
-        login_user(user)
+        user_obj = UserObject(user_row)
+        login_user(user_obj)
         return redirect(url_for("main.index"))
 
     return render_template("auth/login.html")

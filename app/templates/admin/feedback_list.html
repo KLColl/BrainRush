@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Admin Player Feedback</h1>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Message</th>
+        <th>Date</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for f in feedbacks %}
+    <tr>
+        <td>{{ f.id }}</td>
+        <td>{{ f.name }}</td>
+        <td>{{ f.email }}</td>
+        <td>{{ f.message }}</td>
+        <td><span class="local-time" data-utc="{{ f.created_at }}">{{ f.created_at }}</span></td>
+        <td>
+            <a href="{{ url_for('admin.admin_feedback_edit', fid=f.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.admin_feedback_delete', fid=f.id) }}" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
