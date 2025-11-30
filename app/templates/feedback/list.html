@@ -1,42 +1,121 @@
 {% extends "base.html" %}
+
+{% block title %}Feedback - BrainRush{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}">
+{% endblock %}
+
 {% block content %}
+<div class="feedback-container">
+    <div class="feedback-header">
+        <h1>💬 Feedback</h1>
+        <p>Share your thoughts and help us improve BrainRush!</p>
+    </div>
 
-<h1>Player feedback</h1>
-
-{% if current_user.is_authenticated %}
-<form action="{{ url_for('feedback.feedback_add') }}" method="post" class="feedback-form">
-    <textarea name="message" placeholder="Your feedback..." required></textarea>
-    <button type="submit">Submit</button>
-</form>
-{% else %}
-<p><a href="/auth/login">Log in</a> to leave feedback.</p>
-{% endif %}
-
-<hr>
-
-<h2>All feedback:</h2>
-
-<div class="feedback-list">
-    {% for f in feedbacks %}
-    <div class="feedback-item">
-        <p><strong>{{ f.name }}</strong> — 
-        <span class="local-time" data-utc="{{ f.created_at }}"></span>
+    {% if current_user.is_authenticated %}
+    <div class="add-feedback-section">
+        <h2>Leave Your Feedback</h2>
+        <form action="{{ url_for('feedback.feedback_add') }}" method="post" class="feedback-form">
+            <textarea 
+                name="message" 
+                class="feedback-textarea"
+                placeholder="Share your experience with BrainRush..." 
+                maxlength="500"
+                required></textarea>
+            <div class="char-counter">
+                <span id="char-count">0</span> / 500 characters
+            </div>
+            <button type="submit" class="submit-feedback-btn">Submit Feedback</button>
+        </form>
+    </div>
+    {% else %}
+    <div class="add-feedback-section">
+        <p style="text-align: center; color: var(--text-secondary);">
+            <a href="/auth/login" style="color: var(--accent-color); font-weight: bold;">Log in</a> 
+            to leave feedback.
         </p>
-        <p>{{ f.message }}</p>
+    </div>
+    {% endif %}
 
-        {% if current_user.is_authenticated %}
-            {% if current_user.role == "admin" or current_user.id == f.user_id %}
-                <div class="actions">
-                    <a href="{{ url_for('feedback.feedback_edit', fid=f.id) }}">Edit</a>
+    <div class="feedback-list-section">
+        <div class="section-header">
+            <h2 class="section-title">All Feedback</h2>
+            <span class="feedback-count">{{ feedbacks|length }}</span>
+        </div>
 
-                    <form action="{{ url_for('feedback.feedback_delete', fid=f.id) }}" method="post" style="display:inline;">
-                        <button type="submit">Delete</button>
-                    </form>
+        {% if feedbacks %}
+        <div class="feedback-list">
+            {% for f in feedbacks %}
+            <div class="feedback-item">
+                <div class="feedback-item-header">
+                    <div class="feedback-user-info">
+                        <div class="feedback-avatar">{{ f.name[0]|upper }}</div>
+                        <div class="feedback-user-details">
+                            <div class="feedback-username">{{ f.name }}</div>
+                            <div class="feedback-date">
+                                <span class="local-time" data-utc="{{ f.created_at }}">{{ f.created_at }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == "admin" or current_user.id == f.user_id %}
+                        <div class="feedback-actions">
+                            <a href="{{ url_for('feedback.feedback_edit', fid=f.id) }}" class="action-btn edit-btn">
+                                Edit
+                            </a>
+                            <form action="{{ url_for('feedback.feedback_delete', fid=f.id) }}" 
+                                  method="post" 
+                                  style="display:inline;"
+                                  onsubmit="return confirm('Are you sure you want to delete this feedback?');">
+                                <button type="submit" class="action-btn delete-btn">Delete</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
-            {% endif %}
+
+                <div class="feedback-content">
+                    <p class="feedback-message">{{ f.message }}</p>
+                    {% if f.updated_at %}
+                    <span class="updated-badge">Edited</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-feedback">
+            <div class="empty-feedback-icon">💭</div>
+            <h3>No Feedback Yet</h3>
+            <p>Be the first to share your thoughts!</p>
+        </div>
         {% endif %}
     </div>
-    {% endfor %}
 </div>
 
+<script>
+// Лічильник символів для текстового поля
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('.feedback-textarea');
+    const charCount = document.getElementById('char-count');
+    
+    if (textarea && charCount) {
+        textarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+    }
+
+    // Конвертація UTC часу в локальний
+    document.querySelectorAll('.local-time').forEach(function(el) {
+        const utcTime = el.getAttribute('data-utc');
+        if (utcTime) {
+            const date = new Date(utcTime);
+            el.textContent = date.toLocaleString();
+        }
+    });
+});
+</script>
 {% endblock %}

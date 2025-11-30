@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Shop - BrainRush{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/shop.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="shop-container">
+    <div class="shop-header">
+        <h1>🛍️ Shop</h1>
+        <div class="coins-display">
+            <span class="coin-icon">🪙</span>
+            <span class="coin-amount">{{ user_coins }}</span>
+            <span class="coin-label">Coins</span>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="shop-categories">
+        <h2>🎮 Games</h2>
+        <div class="shop-grid">
+            {% for item in items %}
+                {% if item.item_type == 'game' %}
+                <div class="shop-item {% if item.id in purchased_ids %}purchased{% endif %}">
+                    <div class="item-icon">🎮</div>
+                    <h3>{{ item.name }}</h3>
+                    <p class="item-description">{{ item.description }}</p>
+                    <div class="item-footer">
+                        <span class="item-price">
+                            <span class="coin-icon">🪙</span>
+                            {{ item.price }}
+                        </span>
+                        {% if item.id in purchased_ids %}
+                            <button class="btn-purchased" disabled>✓ Purchased</button>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('shop.purchase', item_id=item.id) }}">
+                                <button type="submit" class="btn-buy" 
+                                    {% if user_coins < item.price %}disabled{% endif %}>
+                                    Buy
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <h2>🎨 Themes & Add-ons</h2>
+        <div class="shop-grid">
+            {% for item in items %}
+                {% if item.item_type != 'game' %}
+                <div class="shop-item {% if item.id in purchased_ids %}purchased{% endif %}">
+                    <div class="item-icon">
+                        {% if item.item_type == 'theme' %}🎨
+                        {% elif item.item_type == 'avatar' %}👤
+                        {% else %}✨{% endif %}
+                    </div>
+                    <h3>{{ item.name }}</h3>
+                    <p class="item-description">{{ item.description }}</p>
+                    <div class="item-footer">
+                        <span class="item-price">
+                            <span class="coin-icon">🪙</span>
+                            {{ item.price }}
+                        </span>
+                        {% if item.id in purchased_ids %}
+                            <button class="btn-purchased" disabled>✓ Purchased</button>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('shop.purchase', item_id=item.id) }}">
+                                <button type="submit" class="btn-buy"
+                                    {% if user_coins < item.price %}disabled{% endif %}>
+                                    Buy
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h3>💡 How to earn coins?</h3>
+        <ul>
+            <li>Play games and earn 1 coin for every 10 points scored</li>
+            <li>Complete levels to get bonus coins</li>
+            <li>Higher difficulty = more coins!</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

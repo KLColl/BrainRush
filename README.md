@@ -1,4 +1,4 @@
-# Lab 2-3Team Project
+# Lab 2-3 Team Project
 # 🧠 BrainRush
 
 **BrainRush** — це вебзастосунок із інтелектуальними мінііграми, створений на Flask.  
@@ -16,7 +16,7 @@
 ## ⚙️ Технології
 - Python 3.13  
 - Flask 3.0  
-- Flask-Login, Flask-SQLAlchemy  
+- Flask-Login
 - SQLite  
 - HTML, CSS, JS  
 

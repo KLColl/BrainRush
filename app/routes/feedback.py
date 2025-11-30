@@ -16,7 +16,7 @@ def feedback_add():
     message = request.form.get("message", "").strip()
 
     if not message:
-        flash("The message cannot be empty")
+        flash("The message cannot be empty", "error")
         return redirect(url_for("feedback.feedback_list"))
 
     add_feedback(
@@ -26,7 +26,7 @@ def feedback_add():
         message=message
     )
 
-    flash("The feedback has been added!")
+    flash("Feedback has been added!", "success")
     return redirect(url_for("feedback.feedback_list"))
 
 @feedback_bp.route("/edit/<int:fid>", methods=["GET", "POST"])
@@ -35,17 +35,22 @@ def feedback_edit(fid):
     fb = get_feedback(fid)
 
     if not fb:
-        flash("Feedback not found")
+        flash("Feedback not found", "error")
         return redirect(url_for("feedback.feedback_list"))
 
+    # Перевірка прав доступу - тільки автор може редагувати
     if fb["user_id"] != current_user.id:
-        flash("You cannot edit someone else's feedback!")
+        flash("You cannot edit someone else's feedback!", "error")
         return redirect(url_for("feedback.feedback_list"))
 
     if request.method == "POST":
         message = request.form.get("message", "").strip()
+        if not message:
+            flash("Message cannot be empty", "error")
+            return render_template("feedback/edit.html", f=fb)
+            
         update_feedback(fid, fb["name"], fb["email"], message)
-        flash("The feedback has been updated!")
+        flash("Feedback has been updated!", "success")
         return redirect(url_for("feedback.feedback_list"))
 
     return render_template("feedback/edit.html", f=fb)
@@ -57,13 +62,14 @@ def feedback_delete(fid):
     fb = get_feedback(fid)
 
     if not fb:
-        flash("Feedback not found")
+        flash("Feedback not found", "error")
         return redirect(url_for("feedback.feedback_list"))
 
+    # Перевірка прав доступу - тільки автор або адміністратор можуть видаляти
     if current_user.role != "admin" and fb["user_id"] != current_user.id:
-        flash("You cannot delete someone else's feedback!")
+        flash("You cannot delete someone else's feedback!", "error")
         return redirect(url_for("feedback.feedback_list"))
 
     delete_feedback(fid)
-    flash("The feedback has been deleted.")
+    flash("Feedback has been deleted.", "success")
     return redirect(url_for("feedback.feedback_list"))

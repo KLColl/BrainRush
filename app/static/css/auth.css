@@ -1,3 +1,383 @@
-.auth-section{ max-width:420px; margin:28px auto; }
-.auth-section h2{ text-align:center; }
-.auth-section .link{ display:block; text-align:center; margin-top:8px; color:var(--accent2); text-decoration:none; }
+/* ========================================
+   Auth Container
+   ======================================== */
+.auth-container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.auth-section {
+    max-width: 450px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.auth-card {
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 10px 30px var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.auth-card:hover {
+    box-shadow: 0 15px 40px var(--shadow);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   Auth Header
+   ======================================== */
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.auth-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* ========================================
+   Auth Form
+   ======================================== */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 1rem;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* ========================================
+   Submit Button
+   ======================================== */
+.btn-submit {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
+}
+
+/* ========================================
+   Auth Links
+   ======================================== */
+.auth-links {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.auth-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.auth-link:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+.auth-links p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+/* ========================================
+   Password Toggle
+   ======================================== */
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: var(--accent-color);
+}
+
+/* ========================================
+   Validation Messages
+   ======================================== */
+.validation-message {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.validation-message.error {
+    color: var(--danger-color);
+}
+
+.validation-message.success {
+    color: var(--success-color);
+}
+
+/* ========================================
+   Password Strength Indicator
+   ======================================== */
+.password-strength {
+    margin-top: 0.5rem;
+}
+
+.strength-bar {
+    height: 4px;
+    border-radius: 2px;
+    background-color: var(--border-color);
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.strength-fill.weak {
+    width: 33%;
+    background-color: var(--danger-color);
+}
+
+.strength-fill.medium {
+    width: 66%;
+    background-color: var(--warning-color);
+}
+
+.strength-fill.strong {
+    width: 100%;
+    background-color: var(--success-color);
+}
+
+.strength-text {
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    color: var(--text-secondary);
+}
+
+/* ========================================
+   Social Login (optional)
+   ======================================== */
+.social-login {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.social-login-text {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--bg-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.social-btn:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .auth-header h2 {
+        font-size: 2rem;
+    }
+
+    .auth-form {
+        gap: 1.25rem;
+    }
+
+    .form-input {
+        padding: 0.8rem 1rem;
+    }
+
+    .btn-submit {
+        padding: 0.9rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .auth-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .auth-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .form-input {
+        padding: 0.75rem 0.9rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-card {
+    animation: slideIn 0.5s ease;
+}
+
+/* ========================================
+   Loading State
+   ======================================== */
+.btn-submit.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.btn-submit.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ========================================
+   Dark Theme Adjustments
+   ======================================== */
+[data-theme="dark"] .auth-card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-input {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-input:focus {
+    border-color: var(--accent-color);
+}

@@ -1,4 +1,393 @@
-/* small profile tweaks */
-.profile-summary p{ color:var(--muted); margin:4px 0; }
-.game-selector{ max-width:420px; margin-top:8px; }
-.logout-container{ text-align:right; margin-top:12px; }
+/* ========================================
+   BrainRush - Profile Styles
+   Styles for user profile page
+   ======================================== */
+
+/* ========================================
+   Profile Container
+   ======================================== */
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   Profile Header Section
+   ======================================== */
+.profile-header {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px var(--shadow);
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    margin: 0 auto 1rem;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-username {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.profile-role {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ========================================
+   Stats Overview
+   ======================================== */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px var(--shadow);
+    border-color: var(--accent-color);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ========================================
+   Game Statistics Section
+   ======================================== */
+.game-stats-section {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Game Filter Dropdown */
+.game-filter {
+    margin-bottom: 2rem;
+}
+
+.game-filter label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.game-select {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.game-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* ========================================
+   Stats Table
+   ======================================== */
+.stats-table-container {
+    overflow-x: auto;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.stats-table thead {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.stats-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.stats-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.stats-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.stats-table tbody tr:hover {
+    background-color: var(--bg-hover);
+}
+
+/* Level Badge */
+.level-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.level-badge.easy {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.level-badge.medium {
+    background-color: var(--warning-color);
+    color: #212529;
+}
+
+.level-badge.hard {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* ========================================
+   No Stats Message
+   ======================================== */
+.no-stats {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+
+.no-stats-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-stats h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.no-stats p {
+    margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   Recent Activity
+   ======================================== */
+.recent-activity {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.activity-list {
+    list-style: none;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+    transform: translateX(4px);
+    border-color: var(--accent-color);
+}
+
+.activity-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-secondary);
+    border-radius: 50%;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.activity-details {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.activity-time {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* ========================================
+   Progress Bars
+   ======================================== */
+.progress-container {
+    margin: 1.5rem 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--success-color));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+@media (max-width: 768px) {
+    .profile-header {
+        padding: 2rem 1rem;
+    }
+
+    .profile-username {
+        font-size: 2rem;
+    }
+
+    .stats-overview {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+    }
+
+    .stats-table {
+        font-size: 0.9rem;
+    }
+
+    .stats-table th,
+    .stats-table td {
+        padding: 0.75rem;
+    }
+
+    .game-select {
+        max-width: 100%;
+    }
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-card,
+.activity-item {
+    animation: fadeIn 0.5s ease;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }

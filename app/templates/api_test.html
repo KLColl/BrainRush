@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Testing - BrainRush</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #4a5568;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel h2 {
+            color: #1a202c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .endpoint-group {
+            margin-bottom: 30px;
+        }
+
+        .endpoint-group h3 {
+            color: #4a5568;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .endpoint-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            color: #1a202c;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .endpoint-btn:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .endpoint-btn .method {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 700;
+        }
+
+        .method.GET { background: #48bb78; color: white; }
+        .method.POST { background: #4299e1; color: white; }
+        .method.PUT { background: #ed8936; color: white; }
+        .method.DELETE { background: #f56565; color: white; }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn-execute {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-execute:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-execute:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #response {
+            background: #1a202c;
+            color: #48bb78;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .status-200 { background: #48bb78; color: white; }
+        .status-201 { background: #38b2ac; color: white; }
+        .status-400 { background: #ed8936; color: white; }
+        .status-401 { background: #f56565; color: white; }
+        .status-403 { background: #d69e2e; color: white; }
+        .status-404 { background: #e53e3e; color: white; }
+        .status-500 { background: #e53e3e; color: white; }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 BrainRush API Testing Interface</h1>
+            <p>Test all API endpoints with a user-friendly interface</p>
+        </div>
+
+        <div class="main-grid">
+            <div class="panel">
+                <h2>📋 API Endpoints</h2>
+
+                <div class="endpoint-group">
+                    <h3>👤 User</h3>
+                    <button class="endpoint-btn" onclick="loadEndpoint('GET', '/api/v1/user/profile', null)">
+                        <span>Get User Profile</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showInputModal('GET', '/api/v1/user/{user_id}', 'user_id')">
+                        <span>Get User by ID</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                </div>
+
+                <div class="endpoint-group">
+                    <h3>🛍️ Shop</h3>
+                    <button class="endpoint-btn" onclick="loadEndpoint('GET', '/api/v1/shop/items', null)">
+                        <span>Get Shop Items</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showInputModal('GET', '/api/v1/shop/item/{item_id}', 'item_id')">
+                        <span>Get Item by ID</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showInputModal('POST', '/api/v1/shop/purchase/{item_id}', 'item_id')">
+                        <span>Purchase Item</span>
+                        <span class="method POST">POST</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="loadEndpoint('GET', '/api/v1/shop/purchases', null)">
+                        <span>Get Purchases</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                </div>
+
+                <div class="endpoint-group">
+                    <h3>💬 Feedback</h3>
+                    <button class="endpoint-btn" onclick="loadEndpoint('GET', '/api/v1/feedback', null)">
+                        <span>Get All Feedback</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showInputModal('GET', '/api/v1/feedback/{feedback_id}', 'feedback_id')">
+                        <span>Get Feedback by ID</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showJsonModal('POST', '/api/v1/feedback', 'message')">
+                        <span>Create Feedback</span>
+                        <span class="method POST">POST</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showUpdateFeedbackModal()">
+                        <span>Update Feedback</span>
+                        <span class="method PUT">PUT</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showInputModal('DELETE', '/api/v1/feedback/{feedback_id}', 'feedback_id')">
+                        <span>Delete Feedback</span>
+                        <span class="method DELETE">DELETE</span>
+                    </button>
+                </div>
+
+                <div class="endpoint-group">
+                    <h3>📊 Stats</h3>
+                    <button class="endpoint-btn" onclick="loadEndpoint('GET', '/api/v1/stats/games', null)">
+                        <span>Get User Games</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="showInputModal('GET', '/api/v1/stats/game/{game_name}', 'game_name')">
+                        <span>Get Game Stats</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                    <button class="endpoint-btn" onclick="loadEndpoint('GET', '/api/v1/transactions', null)">
+                        <span>Get Transactions</span>
+                        <span class="method GET">GET</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>📤 Request & Response</h2>
+                
+                <div id="requestPanel" style="display: none;">
+                    <div class="input-group">
+                        <label>Endpoint</label>
+                        <input type="text" id="endpoint" readonly>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Method</label>
+                        <input type="text" id="method" readonly>
+                    </div>
+                    
+                    <div class="input-group" id="bodyGroup" style="display: none;">
+                        <label>Request Body (JSON)</label>
+                        <textarea id="requestBody"></textarea>
+                    </div>
+                    
+                    <button class="btn-execute" id="executeBtn" onclick="executeRequest()">
+                        Execute Request
+                    </button>
+                </div>
+
+                <div id="responsePanel" style="display: none; margin-top: 30px;">
+                    <h3 style="margin-bottom: 15px;">Response</h3>
+                    <div id="statusBadge"></div>
+                    <div id="response"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEndpoint = '';
+        let currentMethod = '';
+        let currentBody = null;
+
+        function loadEndpoint(method, endpoint, body) {
+            currentMethod = method;
+            currentEndpoint = endpoint;
+            currentBody = body;
+
+            document.getElementById('requestPanel').style.display = 'block';
+            document.getElementById('endpoint').value = endpoint;
+            document.getElementById('method').value = method;
+
+            if (method === 'POST' || method === 'PUT') {
+                document.getElementById('bodyGroup').style.display = 'block';
+                if (body) {
+                    document.getElementById('requestBody').value = JSON.stringify(body, null, 2);
+                }
+            } else {
+                document.getElementById('bodyGroup').style.display = 'none';
+            }
+
+            document.getElementById('responsePanel').style.display = 'none';
+        }
+
+        function showInputModal(method, endpointTemplate, paramName) {
+            const value = prompt(`Enter ${paramName}:`);
+            if (value) {
+                const endpoint = endpointTemplate.replace(`{${paramName}}`, value);
+                loadEndpoint(method, endpoint, null);
+            }
+        }
+
+        function showJsonModal(method, endpoint, ...fields) {
+            const body = {};
+            for (const field of fields) {
+                const value = prompt(`Enter ${field}:`);
+                if (value) {
+                    body[field] = value;
+                }
+            }
+            loadEndpoint(method, endpoint, body);
+        }
+
+        function showUpdateFeedbackModal() {
+            const id = prompt('Enter feedback ID:');
+            const message = prompt('Enter new message:');
+            if (id && message) {
+                loadEndpoint('PUT', `/api/v1/feedback/${id}`, { message });
+            }
+        }
+
+        async function executeRequest() {
+            const endpoint = document.getElementById('endpoint').value;
+            const method = document.getElementById('method').value;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+
+            if (method === 'POST' || method === 'PUT') {
+                const bodyText = document.getElementById('requestBody').value;
+                if (bodyText.trim()) {
+                    try {
+                        options.body = bodyText;
+                    } catch (e) {
+                        alert('Invalid JSON in request body');
+                        return;
+                    }
+                }
+            }
+
+            document.getElementById('executeBtn').disabled = true;
+            document.getElementById('executeBtn').textContent = 'Loading...';
+
+            try {
+                const response = await fetch(endpoint, options);
+                const data = await response.json();
+
+                displayResponse(response.status, data);
+            } catch (error) {
+                displayResponse(0, { error: error.message });
+            }
+
+            document.getElementById('executeBtn').disabled = false;
+            document.getElementById('executeBtn').textContent = 'Execute Request';
+        }
+
+        function displayResponse(status, data) {
+            document.getElementById('responsePanel').style.display = 'block';
+            
+            const statusClass = status === 0 ? 'status-500' : `status-${Math.floor(status / 100) * 100}`;
+            document.getElementById('statusBadge').innerHTML = 
+                `<span class="status-badge ${statusClass}">Status: ${status === 0 ? 'Network Error' : status}</span>`;
+            
+            document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>

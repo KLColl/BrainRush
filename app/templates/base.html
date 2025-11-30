@@ -1,74 +1,212 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{% block title %}BrainRush{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  {% block head %}{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BrainRush{% endblock %}</title>
+
+    <!-- Base Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Additional Page-Specific Styles -->
+    {% block head %}{% endblock %}
 </head>
-
-<body>
-  <header class="main-header">
-    <div class="header-content">
-      <nav class="main-nav left-nav">
-        <a href="/">Home</a>
-        <a href="/games">Games</a>
-        <a href="/about">About</a>
-      </nav>
-      <h1 class="logo"><a class="logo-link" href="/">🧠 BrainRush</a></h1>
-      <div class="right-nav">
-        <a href="/feedback" class="feedback-btn">💬 Feedback</a>
-        <a href="/profile" class="profile-btn">👤 Profile</a>
-      </div>
-    </div>
-  </header>
-
-  <main class="main-container">
-    <!-- FLASH MESSAGES -->
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-      <div class="flash-center-wrapper">
-        <div class="flash-center">
-          {% for category, message in messages %}
-            <div class="flash flash-{{ category }}">{{ message }}</div>
-          {% endfor %}
-        </div>
-      </div>
-    {% endif %}
+<body data-theme="{{ current_user.theme if current_user.is_authenticated else 'light' }}">
+    
+    <!-- Flash Messages Container -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     {% endwith %}
 
-    {% block content %}{% endblock %}
-  </main>
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="header-content">
+            
+            <!-- Left Navigation -->
+            <nav class="main-nav left-nav">
+                <a href="{{ url_for('main.index') }}">Home</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('games.games_list') }}">Games</a>
+                    <a href="{{ url_for('shop.shop_list') }}">Shop</a>
+                    <a href="{{ url_for('feedback.feedback_list') }}">Feedback</a>
+                {% endif %}
+                <a href="{{ url_for('about.about_page') }}">About</a>
+            </nav>
 
-  <footer class="main-footer"><p>BrainRush — train your mind daily</p></footer>
+            <!-- Logo -->
+            <h1 class="logo">
+                <a href="{{ url_for('main.index') }}">
+                    🧠 BrainRush
+                </a>
+            </h1>
 
-  {% block scripts %}
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const flashes = document.querySelectorAll('.flash');
-      
-      flashes.forEach(flash => {
-        setTimeout(() => {
-          flash.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-          flash.style.opacity = "0";
-          flash.style.transform = "translateY(-10px)";
-          setTimeout(() => flash.remove(), 500);
-        }, 5000);
-      });
-    });
-  </script>
+            <!-- Right Navigation -->
+            <div class="right-nav">
+                {% if current_user.is_authenticated %}
+                    <!-- Coins Display -->
+                    <div class="user-coins-header" style="display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem;">
+                        <span style="font-size: 1.2rem;">💰</span>
+                        <span style="font-weight: bold; color: var(--accent-color);">{{ current_user.coins }}</span>
+                    </div>
+                    
+                    <!-- Theme Toggle Button -->
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    
+                    <!-- Profile Link -->
+                    <a href="{{ url_for('profile.my_profile') }}" class="btn profile-btn">
+                        👤 Profile
+                    </a>
+                    
+                    <!-- Admin Link (if user is admin) -->
+                    {% if current_user.is_admin %}
+                        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">
+                            ⚙️ Admin
+                        </a>
+                    {% endif %}
+                    
+                    <!-- Logout -->
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">
+                        Logout
+                    </a>
+                {% else %}
+                    <!-- Login/Register Links -->
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                        Login
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary">
+                        Register
+                    </a>
+                {% endif %}
+            </div>
 
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.local-time').forEach(el => {
-      const utcString = el.dataset.utc;
-      const date = new Date(utcString); 
-      el.textContent = date.toLocaleString();
-    });
-  });
-  </script>
-  {% endblock %}
+        </div>
+    </header>
 
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <hr>
+        <p style="font-size: 0.9em; color: var(--text-secondary);">
+            🧠 BrainRush — Train your brain with intellectual mini-games
+        </p>
+    </footer>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        /**
+         * Toggle between light and dark theme
+         * Checks if user has purchased dark theme before allowing toggle
+         */
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            {% if current_user.is_authenticated %}
+                // Check if user has purchased dark theme
+                if (newTheme === 'dark') {
+                    // Make API call to check if user owns dark theme
+                    fetch('/api/v1/shop/purchases')
+                        .then(response => response.json())
+                        .then(data => {
+                            const hasDarkTheme = data.purchases.some(p => 
+                                p.item_type === 'theme' && p.name.toLowerCase().includes('dark')
+                            );
+                            
+                            if (hasDarkTheme || currentTheme === 'dark') {
+                                applyTheme(newTheme);
+                            } else {
+                                alert('Please purchase the Dark Theme from the Shop first!');
+                                window.location.href = '/shop';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error checking theme access:', error);
+                        });
+                } else {
+                    // Switching back to light theme is always allowed
+                    applyTheme(newTheme);
+                }
+            {% else %}
+                // Not logged in, only show light theme
+                alert('Please login to use dark theme!');
+            {% endif %}
+        }
+
+        /**
+         * Apply the selected theme to the page
+         * @param {string} theme - 'light' or 'dark'
+         */
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
+            
+            // Save theme preference to server
+            {% if current_user.is_authenticated %}
+                fetch('/api/v1/user/theme', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ theme: theme })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Theme saved successfully');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving theme:', error);
+                });
+            {% endif %}
+        }
+
+        /**
+         * Update the theme toggle button icon
+         * @param {string} theme - Current theme ('light' or 'dark')
+         */
+        function updateThemeIcon(theme) {
+            const icon = document.getElementById('theme-icon');
+            if (icon) {
+                icon.textContent = theme === 'light' ? '🌙' : '☀️';
+            }
+        }
+
+        // Initialize theme icon on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            updateThemeIcon(currentTheme);
+            
+            // Auto-hide flash messages after 5 seconds
+            setTimeout(() => {
+                const flashMessages = document.querySelector('.flash-messages');
+                if (flashMessages) {
+                    flashMessages.style.opacity = '0';
+                    flashMessages.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        flashMessages.style.display = 'none';
+                    }, 500);
+                }
+            }, 5000);
+        });
+    </script>
+
+    <!-- Additional Page Scripts -->
+    {% block scripts %}{% endblock %}
 </body>
 </html>
