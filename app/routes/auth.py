@@ -13,8 +13,15 @@ def register():
         username = request.form["username"].strip()
         password = request.form["password"]
 
-        if not re.fullmatch(r"[A-Za-z]{1,16}", username):
-            flash("Username must contain only English letters and be up to 16 characters long.", "warning")
+        if not re.fullmatch(r"[A-Za-z0-9]{3,16}", username):
+            flash(
+                "Username must contain only English letters and digits, length 3-16 characters.",
+                "warning"
+            )
+            return redirect(url_for("auth.register"))
+
+        if len(password) < 8:
+            flash("Password must be at least 8 characters long.", "warning")
             return redirect(url_for("auth.register"))
 
         if get_user_by_username(username):

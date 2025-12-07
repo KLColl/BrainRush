@@ -171,10 +171,14 @@ def verify_user_password(user_row, password: str) -> bool:
         return False
     return check_password_hash(user_row["password_hash"], password)
 
-def update_user_coins(user_id: int, amount: int):
-    """Оновити баланс монет користувача (додати/відняти)"""
+def update_user_coins(user_id: int, amount: int, description: str = ""):
+    """Оновити баланс монет користувача та записати транзакцію"""
     conn = get_db_connection()
     conn.execute("UPDATE users SET coins = coins + ? WHERE id = ?", (amount, user_id))
+    conn.execute(
+        "INSERT INTO transactions (user_id, amount, transaction_type, description, created_at) VALUES (?, ?, ?, ?, datetime('now'))",
+        (user_id, amount, "coins_update", description)
+    )
     conn.commit()
     conn.close()
 
