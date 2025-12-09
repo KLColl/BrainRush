@@ -8,7 +8,7 @@ from app.db.init_db import init_db
 
 import app.db.models as db_models
 
-
+# Ініціалізація Flask-Login для управління сесіями користувачів
 login_manager = LoginManager()
 
 
@@ -18,10 +18,12 @@ def create_app():
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret"),
     )
+
+    # Створення директорії для instance
     os.makedirs(app.instance_path, exist_ok=True)
     
     login_manager.init_app(app)
-    login_manager.login_view = "auth.login" # redirect here if not logged in
+    login_manager.login_view = "auth.login" # Redirect для неавторизованих
 
     from app.routes.main import main_bp
     from app.routes.about import about_bp

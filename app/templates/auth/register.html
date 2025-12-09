@@ -26,12 +26,18 @@
                         class="form-input"
                         placeholder="Choose a username" 
                         required
-                        pattern="[A-Za-z]{1,16}"
-                        autocomplete="username">
+                        pattern="[A-Za-z0-9]{3,16}"
+                        minlength="3"
+                        maxlength="16"
+                        autocomplete="username"
+                        title="3-16 characters: letters (A-Z, a-z) and numbers (0-9) only">
                     <div class="validation-message" id="username-validation" style="display: none;">
                         <span id="username-icon"></span>
                         <span id="username-text"></span>
                     </div>
+                    <small style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+                        3-16 characters: letters and numbers only
+                    </small>
                 </div>
 
                 <div class="form-group">
@@ -44,7 +50,9 @@
                             class="form-input"
                             placeholder="Create a strong password" 
                             required
-                            autocomplete="new-password">
+                            minlength="8"
+                            autocomplete="new-password"
+                            title="At least 8 characters">
                     </div>
                     <div class="password-strength">
                         <div class="strength-bar">
@@ -52,6 +60,9 @@
                         </div>
                         <div class="strength-text" id="strength-text"></div>
                     </div>
+                    <small style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem; display: block;">
+                        Minimum 8 characters
+                    </small>
                 </div>
 
                 <button type="submit" class="btn-submit">
@@ -70,7 +81,7 @@
 </div>
 
 <script>
-// Валідація username
+// Валідація username та пароля в реальному часі
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registerForm');
     const usernameInput = document.getElementById('username');
@@ -82,10 +93,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const strengthFill = document.getElementById('strength-fill');
     const strengthText = document.getElementById('strength-text');
 
-    // Валідація username
+    // Валідація username (букви A-Z, a-z та цифри 0-9, довжина 3-16)
     usernameInput.addEventListener('input', function() {
         const value = this.value;
-        const isValid = /^[A-Za-z]{1,16}$/.test(value);
+        const isValid = /^[A-Za-z0-9]{3,16}$/.test(value);
         
         if (value.length === 0) {
             usernameValidation.style.display = 'none';
@@ -103,7 +114,17 @@ document.addEventListener('DOMContentLoaded', function() {
             usernameValidation.classList.remove('success');
             usernameValidation.classList.add('error');
             usernameIcon.textContent = '✗';
-            usernameText.textContent = 'Only English letters, max 16 characters';
+            
+            // Детальні повідомлення про помилки
+            if (value.length < 3) {
+                usernameText.textContent = 'Too short (minimum 3 characters)';
+            } else if (value.length > 16) {
+                usernameText.textContent = 'Too long (maximum 16 characters)';
+            } else if (!/^[A-Za-z0-9]+$/.test(value)) {
+                usernameText.textContent = 'Only letters (A-Z) and numbers (0-9) allowed';
+            } else {
+                usernameText.textContent = 'Invalid username format';
+            }
         }
     });
 
@@ -121,32 +142,66 @@ document.addEventListener('DOMContentLoaded', function() {
         let strength = 'weak';
         let text = 'Weak password';
         
-        if (length >= 8 && /[A-Z]/.test(value) && /[0-9]/.test(value)) {
+        // Критерії складності пароля
+        const hasUpperCase = /[A-Z]/.test(value);
+        const hasLowerCase = /[a-z]/.test(value);
+        const hasNumber = /[0-9]/.test(value);
+        const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
+        
+        const criteriaCount = [hasUpperCase, hasLowerCase, hasNumber, hasSpecial].filter(Boolean).length;
+        
+        if (length >= 8 && criteriaCount >= 3) {
             strength = 'strong';
             text = 'Strong password';
-        } else if (length >= 6) {
+        } else if (length >= 8 && criteriaCount >= 2) {
             strength = 'medium';
             text = 'Medium password';
+        } else if (length >= 8) {
+            strength = 'medium';
+            text = 'Acceptable password';
         }
         
         strengthFill.className = 'strength-fill ' + strength;
         strengthText.textContent = text;
     });
 
-    // Анімація при сабміті
+    // Додаткова валідація при сабміті форми
     form.addEventListener('submit', function(e) {
-        const isUsernameValid = /^[A-Za-z]{1,16}$/.test(usernameInput.value);
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+        
+        // Перевірка username
+        const isUsernameValid = /^[A-Za-z0-9]{3,16}$/.test(username);
         
         if (!isUsernameValid) {
             e.preventDefault();
             usernameValidation.style.display = 'flex';
             usernameValidation.classList.add('error');
             usernameIcon.textContent = '✗';
-            usernameText.textContent = 'Only English letters, max 16 characters';
+            
+            if (username.length < 3 || username.length > 16) {
+                usernameText.textContent = 'Username must be 3-16 characters';
+            } else {
+                usernameText.textContent = 'Only letters (A-Z) and numbers (0-9) allowed';
+            }
+            usernameInput.focus();
             return;
         }
         
+        // Перевірка пароля
+        if (password.length < 8) {
+            e.preventDefault();
+            alert('Password must be at least 8 characters long');
+            passwordInput.focus();
+            return;
+        }
+        
+        // Показати loading стан
         submitBtn.classList.add('loading');
+    });
+
+    usernameInput.addEventListener('blur', function() {
+        this.value = this.value.trim();
     });
 });
 </script>

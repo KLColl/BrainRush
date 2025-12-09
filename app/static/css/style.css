@@ -36,6 +36,308 @@
     --shadow: rgba(0, 0, 0, 0.3);
 }
 
+
+/* ========================================
+   Mobile Responsive Design Improvements
+   ======================================== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+    .header-content {
+        padding: 0 1rem;
+    }
+
+    .main-nav {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+
+    main {
+        padding: 0 1.5rem;
+    }
+}
+
+/* Mobile (481px - 768px) */
+@media (max-width: 768px) {
+    /* Header стає вертикальним */
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    /* Logo по центру */
+    .logo {
+        order: 1;
+        font-size: 1.5rem;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Навігація під лого */
+    .main-nav {
+        order: 2;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .main-nav a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* Права навігація під основною */
+    .right-nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* Монети компактніше */
+    .user-coins-header {
+        margin-right: 0;
+        order: 1;
+    }
+
+    /* Кнопки меншого розміру */
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Main content */
+    main {
+        padding: 0 1rem;
+        margin: 1rem auto;
+    }
+
+    /* Cards */
+    .card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.3rem;
+    }
+
+    /* Flash messages */
+    .flash-messages {
+        top: 60px;
+        right: 10px;
+        left: 10px;
+        max-width: calc(100% - 20px);
+    }
+
+    .alert {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Footer */
+    footer {
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* Small Mobile (320px - 480px) */
+@media (max-width: 480px) {
+    /* Header ще компактніший */
+    .header-content {
+        padding: 0.75rem;
+    }
+
+    .logo {
+        font-size: 1.3rem;
+    }
+
+    /* Навігація в 2 колонки */
+    .main-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .main-nav a {
+        text-align: center;
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    /* Права навігація */
+    .right-nav {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .theme-toggle {
+        grid-column: span 2;
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    /* Кнопки на всю ширину */
+    .btn {
+        width: 100%;
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    /* Main content */
+    main {
+        padding: 0 0.5rem;
+    }
+
+    /* Cards */
+    .card {
+        padding: 0.75rem;
+        border-radius: 6px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+
+    /* Forms */
+    .form-control {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    /* Flash messages */
+    .flash-messages {
+        top: 50px;
+    }
+
+    .alert {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* Footer */
+    footer {
+        padding: 1rem 0.5rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Extra Small Mobile (< 320px)*/
+@media (max-width: 320px) {
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .main-nav a,
+    .btn {
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+}
+
+/* ========================================
+   Landscape Orientation для мобільних
+   ======================================== */
+@media (max-height: 500px) and (orientation: landscape) {
+    .header-content {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .logo {
+        order: 1;
+        flex: 0 0 auto;
+    }
+
+    .main-nav {
+        order: 2;
+        flex: 1 1 auto;
+    }
+
+    .right-nav {
+        order: 3;
+        flex: 0 0 auto;
+    }
+
+    main {
+        padding: 1rem;
+    }
+}
+
+/* ========================================
+   Touch-friendly improvements
+   Збільшені зони кліку для сенсорних екранів
+   ======================================== */
+@media (hover: none) and (pointer: coarse) {
+    /* Більші зони кліку */
+    .main-nav a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn {
+        min-height: 44px;
+    }
+
+    .theme-toggle {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Кнопки форм */
+    .form-control,
+    input,
+    textarea,
+    select {
+        min-height: 44px;
+        font-size: 16px; /* Запобігає zoom на iOS */
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========================================
+   Print Styles
+   Оптимізація для друку
+   ======================================== */
+@media print {
+    .main-header,
+    .flash-messages,
+    .theme-toggle,
+    footer {
+        display: none;
+    }
+
+    main {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .card {
+        page-break-inside: avoid;
+    }
+}
+
 /* ========================================
    Global Styles
    ======================================== */
