@@ -24,11 +24,11 @@ def admin_set_role(user_id):
     """Зміна ролі користувача"""
     role = request.form.get("role")
     if role not in ("user", "admin"):
-        flash("Invalid role")
+        flash("Invalid role", "error")
         return redirect(url_for("admin.admin_users"))
 
     set_user_role(user_id, role)
-    flash("Role updated!")
+    flash("Role updated!", "success")
     return redirect(url_for("admin.admin_users"))
 
 
@@ -44,7 +44,7 @@ def admin_feedback_edit(fid):
     fb = get_feedback(fid)
 
     if not fb:
-        flash("Feedback not found")
+        flash("Feedback not found", "error")
         return redirect(url_for("admin.admin_feedback_list"))
 
     if request.method == "POST":
@@ -52,7 +52,7 @@ def admin_feedback_edit(fid):
         email = request.form["email"]
         message = request.form["message"]
         update_feedback(fid, name, email, message)
-        flash("Feedback updated")
+        flash("Feedback updated", "success")
         return redirect(url_for("admin.admin_feedback_list"))
 
     return render_template("admin/feedback_edit.html", f=fb)
@@ -61,5 +61,5 @@ def admin_feedback_edit(fid):
 @admin_required
 def admin_feedback_delete(fid):
     delete_feedback(fid)
-    flash("Feedback deleted")
+    flash("Feedback deleted", "success")
     return redirect(url_for("admin.admin_feedback_list"))
