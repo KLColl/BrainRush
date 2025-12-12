@@ -30,7 +30,7 @@ def init_db():
         password_hash TEXT NOT NULL,
         role TEXT NOT NULL DEFAULT 'user',
         balance INTEGER NOT NULL DEFAULT 0,
-        coins INTEGER NOT NULL DEFAULT 100,
+        coins INTEGER NOT NULL DEFAULT 99,
         theme TEXT NOT NULL DEFAULT 'light',
         created_at TEXT NOT NULL
     )
@@ -137,7 +137,7 @@ def create_user(username: str, password: str):
     password_hash = generate_password_hash(password)
     cur.execute(
         "INSERT INTO users (username, password_hash, coins, created_at) VALUES (?, ?, ?, ?)",
-        (username, password_hash, 100, datetime.utcnow().isoformat())
+        (username, password_hash, 99, datetime.utcnow().isoformat())
     )
     conn.commit()
     user_id = cur.lastrowid

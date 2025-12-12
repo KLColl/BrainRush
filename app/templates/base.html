@@ -31,20 +31,22 @@
         <div class="header-content">
             
             <!-- Left Navigation -->
-            {% if current_user.is_authenticated %}
-            <div class="submenu">
-                <button class="submenu-toggle">Menu ▼</button>
-                <div class="submenu-items">
-                    <a href="{{ url_for('games.games_list') }}">Games</a>
-                    <a href="{{ url_for('shop.shop_list') }}">Shop</a>
-                    <a href="{{ url_for('feedback.feedback_list') }}">Feedback</a>
-                    <a href="{{ url_for('api_test.api_test_page') }}">Test API</a>
-                </div>
-            </div>
-            {% endif %}
-
             <nav class="main-nav left-nav">
+                {% if current_user.is_authenticated %}
+                <div class="submenu">
+                    <button class="submenu-toggle">Menu ▼</button>
+                    <div class="submenu-items">
+                        <a href="{{ url_for('shop.shop_list') }}">Shop</a>
+                        <a href="{{ url_for('feedback.feedback_list') }}">Feedback</a>
+                        <a href="{{ url_for('api_test.api_test_page') }}">Test API</a>
+                    </div>
+                </div>
+                
+                <a href="{{ url_for('games.games_list') }}">Games</a>
+                {% endif %}
+
                 <a href="{{ url_for('main.index') }}">Home</a>
+
                 <a href="{{ url_for('about.about_page') }}">About</a>
             </nav>
 
