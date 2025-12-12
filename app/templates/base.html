@@ -31,13 +31,20 @@
         <div class="header-content">
             
             <!-- Left Navigation -->
-            <nav class="main-nav left-nav">
-                <a href="{{ url_for('main.index') }}">Home</a>
-                {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated %}
+            <div class="submenu">
+                <button class="submenu-toggle">Menu ▼</button>
+                <div class="submenu-items">
                     <a href="{{ url_for('games.games_list') }}">Games</a>
                     <a href="{{ url_for('shop.shop_list') }}">Shop</a>
                     <a href="{{ url_for('feedback.feedback_list') }}">Feedback</a>
-                {% endif %}
+                    <a href="{{ url_for('api_test.api_test_page') }}">Test API</a>
+                </div>
+            </div>
+            {% endif %}
+
+            <nav class="main-nav left-nav">
+                <a href="{{ url_for('main.index') }}">Home</a>
                 <a href="{{ url_for('about.about_page') }}">About</a>
             </nav>
 
@@ -203,6 +210,29 @@
                     }, 500);
                 }
             }, 5000);
+        });
+    </script>
+
+    <!-- Submenu Click Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const submenu = document.querySelector(".submenu");
+            const toggle = document.querySelector(".submenu-toggle");
+
+            if (toggle && submenu) {
+                // відкриття/закриття при кліку
+                toggle.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    submenu.classList.toggle("open");
+                });
+
+                // закриття при кліку поза меню
+                document.addEventListener("click", (e) => {
+                    if (!submenu.contains(e.target)) {
+                        submenu.classList.remove("open");
+                    }
+                });
+            }
         });
     </script>
 

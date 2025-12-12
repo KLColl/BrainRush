@@ -347,6 +347,64 @@
     box-sizing: border-box;
 }
 
+/* ==== Submenu Base ==== */
+.submenu {
+    position: relative;
+    display: inline-block;
+}
+
+/* Кнопка меню */
+.submenu-toggle {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.submenu-toggle:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent-color);
+}
+
+/* Випадне меню */
+.submenu-items {
+    position: absolute;
+    top: 100%;
+    left: 0; /* ЛІВОРУЧ */
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px var(--shadow);
+    padding: 0.5rem 0;
+    display: none; /* приховане */
+    min-width: 150px;
+    z-index: 999;
+}
+
+/* Пункти меню */
+.submenu-items a {
+    display: block;
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.submenu-items a:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent-color);
+}
+
+/* Показувати коли активне */
+.submenu.open .submenu-items {
+    display: block;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--bg-primary);
