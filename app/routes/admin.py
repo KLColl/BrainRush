@@ -12,6 +12,7 @@ def admin_dashboard():
 @admin_bp.route("/users")
 @admin_required
 def admin_users():
+    """Список всіх користувачів"""
     conn = get_db_connection()
     users = conn.execute("SELECT * FROM users ORDER BY id").fetchall()
     conn.close()
@@ -20,6 +21,7 @@ def admin_users():
 @admin_bp.route("/users/set_role/<int:user_id>", methods=["POST"])
 @admin_required
 def admin_set_role(user_id):
+    """Зміна ролі користувача"""
     role = request.form.get("role")
     if role not in ("user", "admin"):
         flash("Invalid role")

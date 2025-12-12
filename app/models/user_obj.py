@@ -1,5 +1,9 @@
 from flask_login import UserMixin
 
+"""
+UserObject для Flask-Login
+Обгортка над даними користувача з БД
+"""
 class UserObject(UserMixin):
     def __init__(self, row):
         self.id = row["id"]

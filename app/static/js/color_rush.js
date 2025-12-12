@@ -47,6 +47,7 @@ answerButtonsContainer.addEventListener("click", (e) => {
     }
 });
 
+// Автозбереження
 window.addEventListener("beforeunload", () => {
     if (isGameActive) finishGame(true);
 });
@@ -73,6 +74,7 @@ function startGame() {
 }
 
 function generateAnswerButtons(count) {
+    // Створення кнопок з кольорами
     answerButtonsContainer.innerHTML = '';
     const availableColors = COLOR_OPTIONS_ALL.slice(0, count);
     
@@ -98,6 +100,7 @@ function startRound() {
     round++;
     roundEl.textContent = `${round}/${MAX_ROUNDS}`;
 
+    // Генеруємо слово одним кольором, показуємо іншим
     const { word, color } = generateProblem();
     correctColor = color; 
 
@@ -183,6 +186,7 @@ function generateProblem() {
 }
 
 function calculateScoreForTime(level, timeTaken) {
+    // Бонус за швидкість
     const config = LEVEL_CONFIGS[level];
     const base = config.baseScore;
     const limit = config.timeLimit;

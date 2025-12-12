@@ -80,9 +80,7 @@ def login():
 def logout():
     """
     Вихід з системи
-    
-    Знищує сесію користувача через Flask-Login
-    та перенаправляє на сторінку входу
+    Знищує сесію користувача через Flask-Login та перенаправляє на сторінку входу
     """
     logout_user()
     return redirect(url_for("auth.login"))

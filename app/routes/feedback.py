@@ -13,6 +13,7 @@ def feedback_list():
 @feedback_bp.route("/add", methods=["POST"])
 @login_required
 def feedback_add():
+    """Додавання нового відгуку"""
     message = request.form.get("message", "").strip()
 
     if not message:
@@ -32,6 +33,7 @@ def feedback_add():
 @feedback_bp.route("/edit/<int:fid>", methods=["GET", "POST"])
 @login_required
 def feedback_edit(fid):
+    """Редагування власного відгуку"""
     fb = get_feedback(fid)
 
     if not fb:

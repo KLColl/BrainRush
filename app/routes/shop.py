@@ -35,7 +35,7 @@ def shop_list():
 @shop_bp.route("/purchase/<int:item_id>", methods=["POST"])
 @login_required
 def purchase(item_id):
-    # Спроба придбати товар
+    # Перевіряє баланс та виконує транзакцію
     success, message = purchase_item(current_user.id, item_id)
     
     # Відображення відповідного повідомлення на основі результату покупки

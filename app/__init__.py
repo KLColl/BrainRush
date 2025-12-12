@@ -66,5 +66,9 @@ def create_app():
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    Flask-Login callback для завантаження користувача з БД
+    Викликається автоматично при кожному запиті для авторизованих користувачів
+    """
     row = db_models.get_user_by_id(int(user_id))
     return UserObject(row) if row else None

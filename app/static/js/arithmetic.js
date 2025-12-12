@@ -22,6 +22,7 @@ submitBtn.addEventListener("click", checkAnswer);
 finishBtn.addEventListener("click", finishGame);
 restartBtn.addEventListener("click", restartGame);
 
+// Enter для відправки відповіді
 answerInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         e.preventDefault();
@@ -29,6 +30,7 @@ answerInput.addEventListener("keydown", (e) => {
     }
 });
 
+// Автозбереження при закритті
 window.addEventListener("beforeunload", () => {
     if (isGameActive) finishGame(true);
 });
@@ -44,6 +46,7 @@ function startGame() {
 
     isGameActive = true;
 
+    // Оновлення UI
     document.getElementById("level-text").textContent = level;
     document.getElementById("points").textContent = score;
     document.getElementById("feedback").textContent = "";
@@ -68,6 +71,7 @@ function startTimer() {
 }
 
 function nextProblem() {
+    // Генерація наступного прикладу
     if (currentCount >= totalProblems) {
         finishGame();
         return;
@@ -83,6 +87,7 @@ function nextProblem() {
 
     questionStartTime = Date.now();
 
+    // Таймер на відповідь
     let timeLimit = getTimeLimitForLevel();
     questionTimer = setTimeout(() => {
         handleTimeout()
@@ -90,6 +95,7 @@ function nextProblem() {
 }
 
 function checkAnswer() {
+    // Перевірка відповіді користувача
     if (!isGameActive) return;
     const userAnswer = parseFloat(answerInput.value);
     if (isNaN(userAnswer)) return;
@@ -147,7 +153,7 @@ function finishGame(silent = false) {
         document.getElementById("final-score").textContent = score;
         document.getElementById("final-time").textContent = seconds;
 
-        // send result to server
+        // Відправка результату на сервер
         fetch("/game/arithmetic/save_result", {
             method: "POST",
             headers: {

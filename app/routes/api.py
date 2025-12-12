@@ -69,7 +69,7 @@ def get_user_profile():
 @api_bp.route("/user/<int:user_id>", methods=["GET"])
 @api_login_required
 def get_user(user_id):
-    """Отримати користувача за ID (тільки публічна інформація)"""
+    """Отримати користувача за ID"""
     user = get_user_by_id(user_id)
     if not user:
         return jsonify({"error": "Користувача не знайдено"}), 404
