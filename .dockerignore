@@ -1,0 +1,87 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
+.pytest_cache
+.coverage
+htmlcov
+coverage.xml
+.tox
+.hypothesis
+
+# Virtual environments
+venv
+env
+ENV
+.venv
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Logs
+*.log
+logs/
+
+# Database (буде в volume)
+instance/brainrush.db
+instance/*.db
+data/*.db
+
+# Environment
+.env
+.env.example
+
+# Documentation
+*.md
+README.md
+CHANGELOG.md
+lab-reports/
+screenshots/
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
+.dockerignore
+
+# Tests
+tests/
+pytest.ini
+.pytest_cache
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+.tmp/
+
+# Coverage
+.coverage
+htmlcov/
+
+# VS Code
+.vs/
+BrainRush.iml
+coverage.ini
