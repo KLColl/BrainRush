@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: brainrush_dev_app
+    ports:
+      - "5001:5000"
+    env_file:
+      - .env.dev
+    volumes:
+      - .:/app
+      - sqlite_data_dev:/app/instance
+    command: python -m flask run --host=0.0.0.0 --port=5000 --reload
+    restart: unless-stopped
+    networks:
+      - brainrush_dev_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  sqlite_data_dev:
+    driver: local
+
+networks:
+  brainrush_dev_network:
+    driver: bridge

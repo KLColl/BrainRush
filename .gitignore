@@ -16,6 +16,7 @@ env/
 ENV/
 .ENV/
 
+# Database files
 instance/
 *.db
 *.sqlite3
@@ -37,8 +38,6 @@ migrations/versions/*
 
 # Environment files
 .env
-.env.*
-*.env
 
 # IDE / Editor files
 .vs
@@ -65,3 +64,11 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+
+# Docker
+backups/*.db
+!backups/.gitkeep
+
+# OS
+Thumbs.db
+.DS_Store
