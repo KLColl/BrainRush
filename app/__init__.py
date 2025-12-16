@@ -35,6 +35,7 @@ def create_app():
     from app.routes.shop import shop_bp
     from app.routes.api import api_bp
     from app.routes.api_test import api_test_bp
+    from app.routes.leaderboard import leaderboard_bp 
 
     from app.routes.arithmetic import arithmetic_bp
     from app.routes.sequence_recall import sequence_recall_bp
@@ -52,6 +53,7 @@ def create_app():
     app.register_blueprint(shop_bp)
     app.register_blueprint(api_bp)
     app.register_blueprint(api_test_bp)
+    app.register_blueprint(leaderboard_bp)
 
 
     app.register_blueprint(arithmetic_bp)

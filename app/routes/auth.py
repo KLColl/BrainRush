@@ -1,7 +1,7 @@
 import re
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
-from app.db.models import create_user, get_user_by_username, verify_user_password, get_user_by_id
+from app.db.models import create_user, get_user_by_username, verify_user_password, get_user_by_id, check_daily_bonus
 from app.models.user_obj import UserObject
 
 
@@ -71,6 +71,12 @@ def login():
         # Створення UserObject та старт сесії через Flask-Login
         user_obj = UserObject(user_row)
         login_user(user_obj)
+
+        # Перевірка бонусу
+        bonus_msg = check_daily_bonus(user_obj.id)
+        if bonus_msg:
+            flash(bonus_msg, "success")
+            
         return redirect(url_for("main.index"))
 
     return render_template("auth/login.html")

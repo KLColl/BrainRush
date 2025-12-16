@@ -81,13 +81,15 @@ class TestPurchaseAPI:
         assert data['success'] is True
         assert data['remaining_coins'] == initial_coins - item["price"]
     
-    def test_purchase_insufficient_coins(self, authenticated_client, app):
+    def test_purchase_insufficient_coins(self, authenticated_client, app, test_user):
         """Тест покупки без достатньої кількості монет"""
         with app.app_context():
             from app.db import models
             items = models.get_all_shop_items()
             expensive_item = max(items, key=lambda x: x["price"])
         
+            models.set_user_coins(test_user["id"], expensive_item["price"] - 1)
+            
         response = authenticated_client.post(
             f'/api/v1/shop/purchase/{expensive_item["id"]}'
         )
@@ -196,7 +198,7 @@ class TestShopTransactionsIntegration:
             item = items[0]
             
             initial_coins = 200
-            models.update_user_coins(test_user["id"], initial_coins - 100)
+            models.set_user_coins(test_user["id"], initial_coins)
         
         # Купуємо товар
         authenticated_client.post(f'/api/v1/shop/purchase/{item["id"]}')

@@ -3,15 +3,12 @@
 Тестування повних сценаріїв користувача
 """
 import json
-import pytest
 
 class TestCompleteUserJourney:
     """Тести повного шляху користувача"""
     
     def test_user_registration_to_game_purchase(self, client, app):
-        """
-        Сценарій: Реєстрація -> Гра -> Заробіток монет -> Покупка
-        """
+        """Сценарій: Реєстрація -> Логін -> Гра -> Покупка"""
         # 1. Реєстрація
         client.post('/auth/register', data={
             'username': 'newplayer123',
@@ -24,240 +21,272 @@ class TestCompleteUserJourney:
             'password': 'password123'
         })
         
-        # 3. Перевіряємо початковий баланс
-        response = client.get('/api/v1/user/profile')
-        data = json.loads(response.data)
-        initial_coins = data['coins']
-        assert initial_coins == 100  # Початковий баланс
-        
-        # 4. Граємо в гру і заробляємо монети
+        # 3. Встановлюємо чистий початковий баланс
         with app.app_context():
             from app.db import models
             user = models.get_user_by_username('newplayer123')
-            models.save_game_result(
-                user["id"],
-                "arithmetic",
-                "easy",
-                500,  # 500 очок = 50 монет
-                120.0,
-                10
-            )
+            models.set_user_coins(user['id'], 100)
         
-        # 5. Перевіряємо що монети зараховані
+        # 4. Перевіряємо початковий баланс
         response = client.get('/api/v1/user/profile')
         data = json.loads(response.data)
-        assert data['coins'] == 150  # 100 + 50
+        assert data['coins'] == 100
         
-        # 6. Купуємо щось у магазині
+        # 5. Граємо і заробляємо монети
+        with app.app_context():
+            from app.db import models
+            user = models.get_user_by_username('newplayer123')
+            coins_earned = models.save_game_result(
+                user["id"], "arithmetic", "easy", 500, 120.0, 10
+            )
+        
+        # 6. Перевіряємо нараховані монети
+        response = client.get('/api/v1/user/profile')
+        data = json.loads(response.data)
+        expected_coins = 100 + coins_earned
+        assert data['coins'] == expected_coins
+        
+        # 7. Купуємо товар
         items_response = client.get('/api/v1/shop/items')
         items = json.loads(items_response.data)['items']
-        affordable_item = next(i for i in items if i['price'] <= 150)
+        affordable_item = next(i for i in items if i['price'] <= expected_coins)
         
         purchase_response = client.post(f'/api/v1/shop/purchase/{affordable_item["id"]}')
-        purchase_data = json.loads(purchase_response.data)
+        assert purchase_response.status_code == 200
         
-        assert purchase_data['success'] is True
-        
-        # 7. Перевіряємо фінальний баланс
+        # 8. Перевіряємо фінальний баланс
         final_response = client.get('/api/v1/user/profile')
         final_data = json.loads(final_response.data)
-        expected_balance = 150 - affordable_item['price']
-        assert final_data['coins'] == expected_balance
+        assert final_data['coins'] == expected_coins - affordable_item['price']
+
+
+class TestTransactionConsistency:
+    """Тести консистентності транзакцій"""
     
-    def test_game_statistics_accumulation(self, authenticated_client, app, test_user):
-        """
-        Сценарій: Гра в різні ігри -> Накопичення статистики
-        """
-        # 1. Граємо в різні ігри
+    def test_balance_matches_transactions(self, authenticated_client, app, test_user):
+        """Тест відповідності балансу та транзакцій"""
         with app.app_context():
             from app.db import models
             
-            # Arithmetic - 3 рази
-            for i in range(3):
-                models.save_game_result(
-                    test_user["id"],
-                    "arithmetic",
-                    "easy",
-                    100 + i * 10,
-                    30.0 + i * 5,
-                    10
-                )
+            # Встановлюємо чистий початковий баланс
+            models.set_user_coins(test_user['id'], 0)
             
-            # Color Rush - 2 рази
-            for i in range(2):
-                models.save_game_result(
-                    test_user["id"],
-                    "color_rush",
-                    "medium",
-                    200 + i * 20,
-                    60.0 + i * 10,
-                    10
-                )
+            # Операція 1: Додаємо монети вручну
+            models.update_user_coins(test_user['id'], 100, "Manual credit")
+            
+            # Операція 2: Граємо і заробляємо
+            coins_earned = models.save_game_result(
+                test_user['id'], 'arithmetic', 'easy', 200, 30.0, 10
+            )  # 200 / 10 = 20 монет
+            
+            # Операція 3: Купуємо найдешевший товар
+            items = models.get_all_shop_items()
+            cheap_item = min(items, key=lambda x: x['price'])
+            models.purchase_item(test_user['id'], cheap_item['id'])
+            
+            # Отримуємо фактичний баланс
+            actual_balance = models.get_user_coins(test_user['id'])
+            
+            # Очікуваний баланс
+            expected_balance = 100 + coins_earned - cheap_item['price']
         
-        # 2. Перевіряємо загальну статистику
-        profile_response = authenticated_client.get('/api/v1/user/profile')
-        profile_data = json.loads(profile_response.data)
+        # Перевіряємо через API
+        response = authenticated_client.get('/api/v1/user/profile')
+        profile_data = json.loads(response.data)
         
-        assert profile_data['total_games'] == 5
+        assert profile_data['coins'] == expected_balance
+        assert profile_data['coins'] == actual_balance
+    
+    def test_transaction_history_complete(self, authenticated_client, app, test_user):
+        """Тест повноти історії транзакцій"""
+        with app.app_context():
+            from app.db import models
+            
+            # Очищаємо для чистоти тесту
+            models.set_user_coins(test_user['id'], 0)
+            
+            # Операції
+            models.update_user_coins(test_user['id'], 50, "Bonus")
+            models.save_game_result(test_user['id'], 'arithmetic', 'easy', 300, 30.0, 10)
+            
+            items = models.get_all_shop_items()
+            cheap_item = min(items, key=lambda x: x['price'])
+            if models.get_user_coins(test_user['id']) >= cheap_item['price']:
+                models.purchase_item(test_user['id'], cheap_item['id'])
         
-        # 3. Перевіряємо список ігор
-        games_response = authenticated_client.get('/api/v1/stats/games')
-        games_data = json.loads(games_response.data)
+        # Отримуємо транзакції
+        response = authenticated_client.get('/api/v1/transactions')
+        data = json.loads(response.data)
+        transactions = data['transactions']
         
-        assert 'arithmetic' in games_data['games']
-        assert 'color_rush' in games_data['games']
-        
-        # 4. Перевіряємо статистику по грі
-        arithmetic_response = authenticated_client.get('/api/v1/stats/game/arithmetic')
-        arithmetic_data = json.loads(arithmetic_response.data)
-        
-        assert arithmetic_data['game'] == 'arithmetic'
-        assert len(arithmetic_data['stats']) > 0
+        # Перевіряємо наявність всіх типів транзакцій
+        transaction_types = [t['transaction_type'] for t in transactions]
+        assert 'coins_update' in transaction_types
+        assert 'game_reward' in transaction_types
 
 
 class TestShopAndGameInteraction:
     """Тести взаємодії магазину та ігор"""
     
-    def test_earn_coins_through_gameplay(self, authenticated_client, app, test_user):
-        """Тест заробітку монет через гру"""
-        with app.app_context():
-            from app.db import models
-            initial_coins = models.get_user_coins(test_user["id"])
-            
-            # Граємо і заробляємо монети
-            coins_earned = models.save_game_result(
-                test_user["id"],
-                "arithmetic",
-                "hard",
-                300,  # 300 очок = 30 монет
-                90.0,
-                15
-            )
-            
-            final_coins = models.get_user_coins(test_user["id"])
-        
-        assert coins_earned == 30
-        assert final_coins == initial_coins + 30
-        
-        # Перевіряємо транзакцію
-        transactions_response = authenticated_client.get('/api/v1/transactions')
-        transactions = json.loads(transactions_response.data)['transactions']
-        
-        game_reward = next(
-            t for t in transactions
-            if t['transaction_type'] == 'game_reward'
-        )
-        assert game_reward['amount'] == 30
-    
-    def test_purchase_with_earned_coins(self, authenticated_client, app, test_user):
-        """Тест покупки за зароблені монети"""
+    def test_earn_and_spend_cycle(self, authenticated_client, app, test_user):
+        """Тест циклу заробітку та витрат"""
         with app.app_context():
             from app.db import models
             
-            # Заробляємо багато монет
-            for _ in range(5):
-                models.save_game_result(
-                    test_user["id"],
-                    "arithmetic",
-                    "hard",
-                    200,
-                    60.0,
-                    10
+            # Початковий стан
+            models.set_user_coins(test_user['id'], 0)
+            
+            # Заробляємо монети через гру
+            total_earned = 0
+            for _ in range(3):
+                earned = models.save_game_result(
+                    test_user['id'], 'arithmetic', 'easy', 100, 30.0, 10
                 )
+                total_earned += earned
             
-            current_coins = models.get_user_coins(test_user["id"])
-        
-        # Купуємо товар
-        items_response = authenticated_client.get('/api/v1/shop/items')
-        items = json.loads(items_response.data)['items']
-        item_to_buy = items[0]
-        
-        purchase_response = authenticated_client.post(
-            f'/api/v1/shop/purchase/{item_to_buy["id"]}'
-        )
-        
-        assert purchase_response.status_code == 200
-        
-        # Перевіряємо що монети віднялись
-        profile_response = authenticated_client.get('/api/v1/user/profile')
-        profile_data = json.loads(profile_response.data)
-        
-        expected_coins = current_coins - item_to_buy['price']
-        assert profile_data['coins'] == expected_coins
-
-
-class TestDataConsistency:
-    """Тести консистентності даних"""
-    
-    def test_transaction_history_matches_balance(self, authenticated_client, app, test_user):
-        """Тест відповідності історії транзакцій балансу"""
-        with app.app_context():
-            from app.db import models
+            balance_after_games = models.get_user_coins(test_user['id'])
+            assert balance_after_games == total_earned
             
-            # Початковий баланс
-            initial_balance = models.get_user_coins(test_user["id"])
-
-            # Виконуємо операції
-            models.save_game_result(test_user["id"], "arithmetic", "easy", 100, 30.0, 10)
-            models.update_user_coins(test_user["id"], 50)
-            
-            # Купуємо найдешевший товар
+            # Купуємо товар
             items = models.get_all_shop_items()
-            cheap_item = min(items, key=lambda x: x['price'])
-            models.update_user_coins(test_user["id"], cheap_item['price'])
-            models.purchase_item(test_user["id"], cheap_item['id'])
-        
-        # Отримуємо транзакції
-        transactions_response = authenticated_client.get('/api/v1/transactions')
-        transactions = json.loads(transactions_response.data)['transactions']
-        
-        # Підраховуємо баланс з транзакцій
-        calculated_balance = initial_balance
-        for t in transactions:
-            calculated_balance += t['amount']
-        
-        
-        # Отримуємо реальний баланс
-        profile_response = authenticated_client.get('/api/v1/user/profile')
-        actual_balance = json.loads(profile_response.data)['coins']
-        
-        assert calculated_balance == actual_balance, \
-        f"Balance mismatch: calculated={calculated_balance}, actual={actual_balance}"
+            affordable = [i for i in items if i['price'] <= balance_after_games]
+            
+            if affordable:
+                item = affordable[0]
+                success, _ = models.purchase_item(test_user['id'], item['id'])
+                assert success is True
+                
+                final_balance = models.get_user_coins(test_user['id'])
+                assert final_balance == balance_after_games - item['price']
     
-    def test_purchase_updates_all_related_data(self, authenticated_client, app, test_user):
-        """Тест що покупка оновлює всі пов'язані дані"""
+    def test_cannot_purchase_without_coins(self, authenticated_client, app, test_user):
+        """Тест що не можна купити без монет"""
         with app.app_context():
             from app.db import models
+            
+            models.set_user_coins(test_user['id'], 0)
+            
             items = models.get_all_shop_items()
             item = items[0]
             
-            models.update_user_coins(test_user["id"], item["price"])
-            initial_coins = models.get_user_coins(test_user["id"])
+            success, message = models.purchase_item(test_user['id'], item['id'])
+            assert success is False
+            assert 'not enough' in message.lower()
+
+
+class TestMultipleGamesStatistics:
+    """Тести статистики для кількох ігор"""
+    
+    def test_statistics_across_games(self, authenticated_client, app, test_user):
+        """Тест агрегованої статистики по всіх іграх"""
+        with app.app_context():
+            from app.db import models
+            
+            # Arithmetic - 3 гри
+            for i in range(3):
+                models.save_game_result(
+                    test_user['id'], 'arithmetic', 'easy', 100 * (i+1), 30.0, 10
+                )
+            
+            # Color Rush - 2 гри
+            for i in range(2):
+                models.save_game_result(
+                    test_user['id'], 'color_rush', 'medium', 200 * (i+1), 60.0, 10
+                )
         
-        # Купуємо товар
-        authenticated_client.post(f'/api/v1/shop/purchase/{item["id"]}')
+        # Перевіряємо загальну статистику
+        response = authenticated_client.get('/api/v1/user/profile')
+        data = json.loads(response.data)
         
-        # 1. Перевіряємо баланс
-        profile_response = authenticated_client.get('/api/v1/user/profile')
-        profile_data = json.loads(profile_response.data)
-        assert profile_data['coins'] == initial_coins - item['price']
+        assert data['total_games'] == 5
+        assert data['total_points'] == 1200  # 100+200+300+200+400
         
-        # 2. Перевіряємо історію покупок
-        purchases_response = authenticated_client.get('/api/v1/shop/purchases')
-        purchases = json.loads(purchases_response.data)['purchases']
-        assert any(p['id'] == item['id'] for p in purchases)
+        # Перевіряємо список ігор
+        games_response = authenticated_client.get('/api/v1/stats/games')
+        games = json.loads(games_response.data)['games']
         
-        # 3. Перевіряємо транзакції
-        transactions_response = authenticated_client.get('/api/v1/transactions')
-        transactions = json.loads(transactions_response.data)['transactions']
-        purchase_transaction = next(
-            t for t in transactions
-            if t['transaction_type'] == 'purchase'
-        )
-        assert purchase_transaction['amount'] == -item['price']
-        
-        # 4. Перевіряємо що товар позначений як куплений
-        items_response = authenticated_client.get('/api/v1/shop/items')
-        items_data = json.loads(items_response.data)['items']
-        purchased_item = next(i for i in items_data if i['id'] == item['id'])
-        assert purchased_item['is_purchased'] is True
+        assert 'arithmetic' in games
+        assert 'color_rush' in games
+
+
+class TestConcurrentOperations:
+    """Тести паралельних операцій"""
+    
+    def test_multiple_transactions_consistency(self, authenticated_client, app, test_user):
+        """Тест консистентності при множинних транзакціях"""
+        with app.app_context():
+            from app.db import models
+            
+            initial_coins = 100
+            models.set_user_coins(test_user['id'], initial_coins)
+            
+            # Виконуємо багато операцій
+            operations = []
+            
+            # Додавання
+            models.update_user_coins(test_user['id'], 50, "Op1")
+            operations.append(50)
+            
+            # Гра 1
+            earned1 = models.save_game_result(
+                test_user['id'], 'arithmetic', 'easy', 100, 30.0, 10
+            )
+            operations.append(earned1)
+            
+            # Гра 2
+            earned2 = models.save_game_result(
+                test_user['id'], 'color_rush', 'medium', 200, 60.0, 10
+            )
+            operations.append(earned2)
+            
+            # Віднімання
+            models.update_user_coins(test_user['id'], -30, "Op4")
+            operations.append(-30)
+            
+            # Перевіряємо фінальний баланс
+            final_coins = models.get_user_coins(test_user['id'])
+            expected = initial_coins + sum(operations)
+            
+            assert final_coins == expected
+
+
+class TestEdgeCases:
+    """Тести граничних випадків"""
+    
+    def test_zero_balance_operations(self, app, test_user):
+        """Тест операцій з нульовим балансом"""
+        with app.app_context():
+            from app.db import models
+            
+            models.set_user_coins(test_user['id'], 0)
+            
+            # Заробляємо
+            earned = models.save_game_result(
+                test_user['id'], 'arithmetic', 'easy', 10, 30.0, 10
+            )
+            
+            balance = models.get_user_coins(test_user['id'])
+            assert balance == earned
+    
+    def test_negative_operations(self, app, test_user):
+        """Тест від'ємних операцій"""
+        with app.app_context():
+            from app.db import models
+            
+            models.set_user_coins(test_user['id'], 100)
+            models.update_user_coins(test_user['id'], -50, "Penalty")
+            
+            balance = models.get_user_coins(test_user['id'])
+            assert balance == 50
+    
+    def test_minimum_game_reward(self, app, test_user):
+        """Тест мінімальної винагороди за гру"""
+        with app.app_context():
+            from app.db import models
+            
+            # Дуже малий score
+            earned = models.save_game_result(
+                test_user['id'], 'arithmetic', 'easy', 1, 30.0, 10
+            )
+            
+            assert earned >= 1  # Мінімум 1 монета

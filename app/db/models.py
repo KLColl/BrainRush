@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
@@ -30,8 +30,11 @@ def init_db():
         password_hash TEXT NOT NULL,
         role TEXT NOT NULL DEFAULT 'user',
         balance INTEGER NOT NULL DEFAULT 0,
-        coins INTEGER NOT NULL DEFAULT 99,
+        coins INTEGER NOT NULL DEFAULT 300,
         theme TEXT NOT NULL DEFAULT 'light',
+        current_avatar TEXT DEFAULT 'default',
+        login_streak INTEGER DEFAULT 0,
+        last_login_date TEXT,
         created_at TEXT NOT NULL
     )
     """)
@@ -137,7 +140,7 @@ def create_user(username: str, password: str):
     password_hash = generate_password_hash(password)
     cur.execute(
         "INSERT INTO users (username, password_hash, coins, created_at) VALUES (?, ?, ?, ?)",
-        (username, password_hash, 99, datetime.utcnow().isoformat())
+        (username, password_hash, 300, datetime.utcnow().isoformat())
     )
     conn.commit()
     user_id = cur.lastrowid
@@ -170,6 +173,13 @@ def verify_user_password(user_row, password: str) -> bool:
     if not user_row:
         return False
     return check_password_hash(user_row["password_hash"], password)
+
+def set_user_coins(user_id, new_amount):
+    """Встановлює баланс монет користувача на конкретне значення (Критично для тестування)"""
+    conn = get_db_connection()
+    conn.execute("UPDATE users SET coins = ? WHERE id = ?", (new_amount, user_id))
+    conn.commit()
+    conn.close()
 
 def update_user_coins(user_id: int, amount: int, description: str = ""):
     """Оновити баланс монет користувача та записати транзакцію"""
@@ -417,3 +427,107 @@ def get_user_transactions(user_id: int, limit=50):
     """, (user_id, limit)).fetchall()
     conn.close()
     return transactions
+
+# -----------------------
+# LEADERBOARDS
+# -----------------------
+def get_global_leaderboard(limit=10):
+    """Топ користувачів за монетами"""
+    conn = get_db_connection()
+    rows = conn.execute(
+        "SELECT username, coins, current_avatar FROM users ORDER BY coins DESC LIMIT ?", 
+        (limit,)
+    ).fetchall()
+    conn.close()
+    return rows
+
+def get_game_leaderboard(game_name, limit=10):
+    """Топ кращих результатів у конкретній грі"""
+    conn = get_db_connection()
+    rows = conn.execute("""
+        SELECT u.username, u.current_avatar, MAX(gr.score) as max_score
+        FROM game_results gr
+        JOIN users u ON gr.user_id = u.id
+        WHERE gr.game_name = ?
+        GROUP BY u.id
+        ORDER BY max_score DESC
+        LIMIT ?
+    """, (game_name, limit)).fetchall()
+    conn.close()
+    return rows
+
+# -----------------------
+# DAILY BONUS
+# -----------------------
+def check_daily_bonus(user_id):
+    """Перевірка та нарахування щоденного бонусу"""
+    conn = get_db_connection()
+    user = conn.execute("SELECT last_login_date, login_streak FROM users WHERE id = ?", (user_id,)).fetchone()
+    
+    today = datetime.utcnow().date().isoformat()
+    last_login = user["last_login_date"]
+    streak = user["login_streak"] or 0
+    bonus_amount = 0
+    message = None
+
+    if last_login != today:
+        # Якщо останній вхід був вчора - збільшуємо стрік
+        last_date = datetime.strptime(last_login, "%Y-%m-%d").date() if last_login else None
+        yesterday = datetime.utcnow().date() - timedelta(days=1)
+        
+        if last_date == yesterday:
+            streak += 1
+        else:
+            streak = 1 # Скидання стріку, якщо пропустив день
+            
+        # Нарахування (10 + 5 за кожен день стріку, макс 50)
+        bonus_amount = min(10 + (streak * 5), 50)
+        
+        conn.execute("""
+            UPDATE users 
+            SET coins = coins + ?, login_streak = ?, last_login_date = ? 
+            WHERE id = ?
+        """, (bonus_amount, streak, today, user_id))
+        
+        conn.execute("""
+            INSERT INTO transactions (user_id, amount, transaction_type, description, created_at) 
+            VALUES (?, ?, 'daily_bonus', ?, ?)
+        """, (user_id, bonus_amount, f"Daily bonus (Day {streak})", datetime.utcnow().isoformat()))
+        
+        conn.commit()
+        message = f"Daily Bonus! +{bonus_amount} coins (Streak: {streak} days)"
+    
+    conn.close()
+    return message
+
+# -----------------------
+# AVATAR
+# -----------------------
+def equip_avatar(user_id, avatar_name):
+    """Встановити активний аватар"""
+    conn = get_db_connection()
+    conn.execute("UPDATE users SET current_avatar = ? WHERE id = ?", (avatar_name, user_id))
+    conn.commit()
+    conn.close()
+
+# -----------------------
+# SETTINGS
+# -----------------------
+def change_user_password(user_id, new_password_hash):
+    """Змінити пароль користувача"""
+    conn = get_db_connection()
+    conn.execute("UPDATE users SET password_hash = ? WHERE id = ?", (new_password_hash, user_id))
+    conn.commit()
+    conn.close()
+
+def delete_user_account(user_id):
+    """Повне видалення акаунту"""
+    conn = get_db_connection()
+    # SQLite з FK constraints ON має видалити каскадно, але для надійності:
+    conn.execute("DELETE FROM game_results WHERE user_id = ?", (user_id,))
+    conn.execute("DELETE FROM user_purchases WHERE user_id = ?", (user_id,))
+    conn.execute("DELETE FROM transactions WHERE user_id = ?", (user_id,))
+    conn.execute("DELETE FROM feedback WHERE user_id = ?", (user_id,))
+    conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()

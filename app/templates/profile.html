@@ -1,22 +1,103 @@
 {% extends "base.html" %}
 {% block title %}{{ user.username }} — Profile{% endblock %}
-{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
 {% block content %}
 <section class="profile-section card">
   <div class="profile-header">
-    <h1>👤 {{ user.username }}</h1>
+    <div class="profile-avatar">
+        {% if user.current_avatar and user.current_avatar != 'default' %}
+            <span class="avatar-icon">👤</span>
+        {% else %}
+            {{ user.username[0]|upper }}
+        {% endif %}
+    </div>
+    <h1>{{ user.username }}</h1>
+    <span class="profile-role">{{ user.role }}</span>
+    
     <div class="profile-summary">
-      <p><strong>Games Played:</strong> {{ total_games }}</p>
-      <p><strong>Total Points:</strong> {{ total_points }}</p>
+      <span class="summary-item">🎮 Games: <strong>{{ total_games }}</strong></span>
+      <span class="summary-item">🏆 Points: <strong>{{ total_points }}</strong></span>
     </div>
   </div>
 
+  {% if is_own_profile %}
+  <div class="settings-toggle-container">
+      <button class="btn btn-secondary settings-toggle-btn" id="settingsToggle">⚙️ Account Settings</button>
+  </div>
+  {% endif %}
+
+  {% if is_own_profile %}
+  <div class="settings-section" id="settingsContent" style="display:none;">
+      <h2 class="section-title">Account Settings</h2>
+
+      <div class="settings-group">
+          <div class="settings-title">🎭 Change Avatar</div>
+          <form method="POST" action="{{ url_for('profile.settings') }}">
+              <input type="hidden" name="action" value="change_avatar">
+              <div class="form-row">
+                  <select name="avatar" class="form-control">
+                      {% for av in available_avatars %}
+                        <option value="{{ av }}" {% if user.current_avatar == av %}selected{% endif %}>{{ av }}</option>
+                      {% endfor %}
+                  </select>
+                  <button type="submit" class="btn btn-primary">Update</button>
+              </div>
+          </form>
+      </div>
+
+      <div class="settings-group">
+          <div class="settings-title">🔒 Change Password</div>
+          <form method="POST" action="{{ url_for('profile.settings') }}">
+              <input type="hidden" name="action" value="change_password">
+              <div class="form-group">
+                  <input type="password" name="new_password" class="form-control" placeholder="New Password (min 8 chars)" required minlength="8">
+              </div>
+              <div class="form-group">
+                  <input type="password" name="confirm_password" class="form-control" placeholder="Confirm Password" required>
+              </div>
+              <button type="submit" class="btn btn-warning">Change Password</button>
+          </form>
+      </div>
+
+      <div class="settings-group danger-zone">
+          <div class="settings-title danger-title">⚠️ Delete Account</div>
+          <p>This action is irreversible. All your progress and coins will be lost.</p>
+          <form method="POST" action="{{ url_for('profile.settings') }}" onsubmit="return confirm('Are you sure? This cannot be undone.');">
+              <input type="hidden" name="action" value="delete_account">
+              <div class="form-row">
+                  <input type="text" name="confirm_delete" class="form-control" placeholder="Type DELETE to confirm" required>
+                  <button type="submit" class="btn btn-danger">Delete Account</button>
+              </div>
+          </form>
+      </div>
+  </div>
+  {% endif %}
+  
+  {% if is_own_profile %}
+  <script>
+    document.getElementById('settingsToggle').addEventListener('click', function() {
+        const content = document.getElementById('settingsContent');
+        // Перемикання видимості
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+    });
+  </script>
+  {% endif %}
+
   <div class="game-selector">
     <form method="get">
-      <label for="game">Select Game:</label>
-      <select name="game" id="game" onchange="this.form.submit()">
+      <label for="game">Select Game Statistics:</label>
+      <select name="game" id="game" onchange="this.form.submit()" class="form-control">
         <option value="">-- Choose Game --</option>
-        {% for game in games_list %}<option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>{% endfor %}
+        {% for game in games_list %}
+            <option value="{{ game }}" {% if game == selected_game %}selected{% endif %}>{{ game }}</option>
+        {% endfor %}
       </select>
     </form>
   </div>
@@ -29,14 +110,23 @@
       <thead><tr><th>Level | Rounds</th><th>Games</th><th>Score</th><th>Avg Time (s)</th></tr></thead>
       <tbody>
         {% for stat in stats_by_game %}
-        <tr><td>{{ stat.level }} | {{ stat.rounds }}</td><td>{{ stat.rounds_played }}</td><td>{{ stat.total_score }}</td><td>{{ "%.1f"|format(stat.avg_time) }}</td></tr>
+        <tr>
+            <td>{{ stat.level }} | {{ stat.rounds }}</td>
+            <td>{{ stat.rounds_played }}</td>
+            <td>{{ stat.total_score }}</td>
+            <td>{{ "%.1f"|format(stat.avg_time) }}</td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
-    {% else %}<p class="no-data">No results for this game yet.</p>{% endif %}
+    {% else %}
+        <p class="no-data">No results for this game yet.</p>
+    {% endif %}
   </div>
   {% endif %}
 
-  <div class="logout-container"><a href="/auth/logout" class="btn danger">Log Out</a></div>
+  <div class="logout-container">
+      <a href="/auth/logout" class="btn btn-secondary">Log Out</a>
+  </div>
 </section>
 {% endblock %}
