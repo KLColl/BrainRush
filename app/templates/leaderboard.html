@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaderboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="leaderboard-page">
+
+    <div class="container" style="max-width: 1000px; margin: 2rem auto;">
+        <h1 class="text-center">🏆 Hall of Fame</h1>
+
+        <!-- GLOBAL TOP (COINS) -->
+        <div class="card mt-4">
+            <h2 class="card-title text-center">💰 Richest Players</h2>
+
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>User</th>
+                        <th>Coins</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in global_top %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.coins }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3">No data</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- GAME LEADERBOARDS -->
+        <div class="grid-container">
+
+            <div class="card">
+                <h3>🧮 Arithmetic</h3>
+                <ul>
+                    {% for u in arithmetic_top %}
+                        <li>{{ u.username }} <span>{{ u.max_score }}</span></li>
+                    {% else %}
+                        <li>No data</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🎨 Color Rush</h3>
+                <ul>
+                    {% for u in color_top %}
+                        <li>{{ u.username }} <span>{{ u.max_score }}</span></li>
+                    {% else %}
+                        <li>No data</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🧠 Sequence Recall</h3>
+                <ul>
+                    {% for u in sequence_top %}
+                        <li>{{ u.username }} <span>{{ u.max_score }}</span></li>
+                    {% else %}
+                        <li>No data</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>👆 Tapping Memory</h3>
+                <ul>
+                    {% for u in tapping_top %}
+                        <li>{{ u.username }} <span>{{ u.max_score }}</span></li>
+                    {% else %}
+                        <li>No data</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

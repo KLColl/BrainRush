@@ -62,6 +62,8 @@ class TestUserModel:
         """Тест оновлення балансу монет"""
         with app.app_context():
             user_id = models.create_user("cointest", "password123")
+
+            models.set_user_coins(user_id, 100)
             models.update_user_coins(user_id, 50)
             coins = models.get_user_coins(user_id)
             assert coins == 150  # 100 початкових + 50
@@ -70,6 +72,8 @@ class TestUserModel:
         """Тест віднімання монет"""
         with app.app_context():
             user_id = models.create_user("cointest2", "password123")
+
+            models.set_user_coins(user_id, 100)
             models.update_user_coins(user_id, -30)
             coins = models.get_user_coins(user_id)
             assert coins == 70  # 100 - 30
@@ -160,6 +164,8 @@ class TestShop:
         with app.app_context():
             items = models.get_all_shop_items()
             expensive_item = max(items, key=lambda x: x["price"])
+            
+            models.set_user_coins(test_user["id"], expensive_item["price"] - 1)
             
             success, msg = models.purchase_item(test_user["id"], expensive_item["id"])
             assert success is False

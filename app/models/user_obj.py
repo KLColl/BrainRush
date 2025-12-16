@@ -12,6 +12,8 @@ class UserObject(UserMixin):
         self.role = row["role"]
         self.coins = row["coins"] if "coins" in row.keys() else 0
         self.theme = row["theme"] if "theme" in row.keys() else "light"
+        self.current_avatar = row["current_avatar"] if "current_avatar" in row.keys() else "default"
+        self.login_streak = row["login_streak"] if "login_streak" in row.keys() else 0
         self.created_at = row["created_at"]
 
     @property

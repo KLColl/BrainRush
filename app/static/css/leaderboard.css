@@ -1,0 +1,78 @@
+/* =====================================
+   LEADERBOARD (Scoped styles only)
+   ===================================== */
+
+.leaderboard-page {
+    width: 100%;
+}
+
+/* ---------- TABLE ---------- */
+
+.leaderboard-page .stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+}
+
+.leaderboard-page .stats-table th,
+.leaderboard-page .stats-table td {
+    padding: 0.65rem 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.leaderboard-page .stats-table th {
+    background-color: var(--bg-hover);
+    font-weight: 600;
+}
+
+.leaderboard-page .stats-table tbody tr:hover {
+    background-color: var(--bg-hover);
+}
+
+/* ---------- GRID ---------- */
+
+.leaderboard-page .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+.leaderboard-page .grid-container h3 {
+    margin-bottom: 0.75rem;
+}
+
+.leaderboard-page .grid-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-page .grid-container li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.45rem 0;
+    border-bottom: 1px dashed var(--border-color);
+    font-size: 0.95rem;
+}
+
+.leaderboard-page .grid-container li:last-child {
+    border-bottom: none;
+}
+
+/* ---------- TOP 1 ---------- */
+
+.leaderboard-page .grid-container li:first-child {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 768px) {
+    .leaderboard-page .grid-container {
+        grid-template-columns: 1fr;
+    }
+}

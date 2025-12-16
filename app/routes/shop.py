@@ -95,7 +95,14 @@ def my_purchases():
     # Отримання всіх товарів, придбаних поточним користувачем
     purchases = get_user_purchases(current_user.id)
     
+    items = get_all_shop_items()
+    user_coins = get_user_coins(current_user.id)
+    purchased_ids = [p["id"] for p in purchases]
+
     return render_template(
-        "shop/purchases.html",
+        "shop/list.html",
+        items=items,
+        user_coins=user_coins,
+        purchased_ids=purchased_ids,
         purchases=purchases
     )
