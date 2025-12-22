@@ -467,9 +467,8 @@ docker-compose -f docker-compose.dev.yml up -d
 - Docker та DevOps
 
 **Самойло Тарас Костянтинович**
-- Frontend розробка (HTML, CSS, JS)
+- Frontend розробка (HTML, CSS)
 - Дизайн інтерфейсу
-- Адаптивна верстка
 - UX/UI покращення
 
 

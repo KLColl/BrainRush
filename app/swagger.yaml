@@ -1,0 +1,567 @@
+openapi: 3.0.0
+info:
+  title: BrainRush API
+  description: API for the BrainRush cognitive training platform
+  version: 1.0.0
+  contact:
+    name: BrainRush Team
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+
+tags:
+  - name: User
+    description: User-related operations
+  - name: Shop
+    description: Shop and purchase management
+  - name: Feedback
+    description: User feedback and reviews
+  - name: Stats
+    description: Game performance statistics
+
+paths:
+  /api/v1/user/profile:
+    get:
+      tags:
+        - User
+      summary: Get current user profile
+      description: Returns full profile information for the authenticated user
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Profile successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/user/{user_id}:
+    get:
+      tags:
+        - User
+      summary: Get user by ID
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/user/theme:
+    post:
+      tags:
+        - User
+      summary: Update user theme preference
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                theme:
+                  type: string
+                  enum: [light, dark]
+                  example: dark
+      responses:
+        '200':
+          description: Theme successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  theme:
+                    type: string
+
+  /api/v1/shop/items:
+    get:
+      tags:
+        - Shop
+      summary: Get all shop items
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of available items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShopItem'
+                  user_coins:
+                    type: integer
+
+  /api/v1/shop/item/{item_id}:
+    get:
+      tags:
+        - Shop
+      summary: Get specific shop item details
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Item information retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopItem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/shop/purchase/{item_id}:
+    post:
+      tags:
+        - Shop
+      summary: Purchase an item
+      parameters:
+        - name: item_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Purchase successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  remaining_coins:
+                    type: integer
+        '400':
+          description: Purchase error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  error:
+                    type: string
+
+  /api/v1/shop/purchases:
+    get:
+      tags:
+        - Shop
+      summary: Get purchase history
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of completed purchases
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  purchases:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Purchase'
+
+  /api/v1/feedback:
+    get:
+      tags:
+        - Feedback
+      summary: Get all feedback
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of feedback entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  feedback:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Feedback'
+                  count:
+                    type: integer
+    post:
+      tags:
+        - Feedback
+      summary: Submit new feedback
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  maxLength: 500
+                  example: "Great app for brain training!"
+      responses:
+        '201':
+          description: Feedback created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  feedback_id:
+                    type: integer
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/v1/feedback/{feedback_id}:
+    get:
+      tags:
+        - Feedback
+      summary: Get feedback by ID
+      parameters:
+        - name: feedback_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Feedback data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags:
+        - Feedback
+      summary: Update feedback
+      parameters:
+        - name: feedback_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Feedback updated
+        '403':
+          description: No permission to edit this feedback
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - Feedback
+      summary: Delete feedback
+      parameters:
+        - name: feedback_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Feedback deleted
+        '403':
+          description: No permission to delete this feedback
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/stats/games:
+    get:
+      tags:
+        - Stats
+      summary: Get list of user's played games
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of games
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  games:
+                    type: array
+                    items:
+                      type: string
+                    example: ["arithmetic", "color_rush"]
+
+  /api/v1/stats/game/{game_name}:
+    get:
+      tags:
+        - Stats
+      summary: Get statistics for a specific game
+      parameters:
+        - name: game_name
+          in: path
+          required: true
+          schema:
+            type: string
+          example: arithmetic
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Game statistics retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  game:
+                    type: string
+                  stats:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GameStats'
+
+  /api/v1/transactions:
+    get:
+      tags:
+        - Stats
+      summary: Get transaction history
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+                  count:
+                    type: integer
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+
+  schemas:
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        role:
+          type: string
+        coins:
+          type: integer
+        theme:
+          type: string
+        total_games:
+          type: integer
+        total_points:
+          type: integer
+        total_coins_earned:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        total_games:
+          type: integer
+        total_points:
+          type: integer
+        created_at:
+          type: string
+
+    ShopItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        item_type:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        is_purchased:
+          type: boolean
+        created_at:
+          type: string
+
+    Purchase:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        item_type:
+          type: string
+        price:
+          type: integer
+
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        message:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+    GameStats:
+      type: object
+      properties:
+        level:
+          type: string
+        rounds:
+          type: integer
+        rounds_played:
+          type: integer
+        total_score:
+          type: integer
+        avg_time:
+          type: number
+        total_coins:
+          type: integer
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: integer
+        transaction_type:
+          type: string
+        description:
+          type: string
+        created_at:
+          type: string
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Authentication required"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
