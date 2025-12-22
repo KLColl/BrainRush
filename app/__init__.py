@@ -35,7 +35,8 @@ def create_app():
     from app.routes.shop import shop_bp
     from app.routes.api import api_bp
     from app.routes.api_test import api_test_bp
-    from app.routes.leaderboard import leaderboard_bp 
+    from app.routes.leaderboard import leaderboard_bp
+    from app.routes.swagger import swagger_bp, swaggerui_blueprint
 
     from app.routes.arithmetic import arithmetic_bp
     from app.routes.sequence_recall import sequence_recall_bp
@@ -60,6 +61,8 @@ def create_app():
     app.register_blueprint(sequence_recall_bp)
     app.register_blueprint(color_rush_bp)
     app.register_blueprint(tapping_memory_bp)
+    app.register_blueprint(swaggerui_blueprint)
+    app.register_blueprint(swagger_bp)
 
     with app.app_context():
         init_db()
